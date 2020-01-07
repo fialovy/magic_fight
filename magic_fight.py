@@ -3,9 +3,13 @@ import os
 import re
 
 
+CHARACTERS_DIR = 'character_infos'
+
+
 class Character:
 
-    def __init__(self, bio, magic_info, taunts):
+    def __init__(self, name, bio, magic_info, taunts):
+        self.name = name
         self.bio = bio
         self.magic_info = magic_info
         self.taunts = taunts
@@ -20,14 +24,33 @@ class Game:
         self.set_up_characters()
 
     def set_up_characters(self):
-        # Better to just read JSONs or something? Yeah, well sue me.
-        for name in os.listdir(os.path.abspath('character_infos')):
-            import pdb; pdb.set_trace() 
-            opponents[name] = Character(bio, magic_info, taunts)
+        for name in os.listdir(f'{CHARACTERS_DIR}'):
+            namepath = f'{CHARACTERS_DIR}/{name}'
+
+            with open(f'{namepath}/bio.txt', 'r') as bio_fl, \
+                 open(f'{namepath}/magic.json', 'r') as magic_fl, \
+                 open(f'{namepath}/taunts.json', 'r') as taunts_fl:
+                self.opponents[name] = Character(
+                    name = name,
+                    bio = bio_fl.read().strip(),
+                    magic_info = json.load(magic_fl),
+                    taunts = json.load(taunts_fl)
+                )
+
+    def select_character(self):
+        chosen = False
+
+        while not chosen:
+            print('Press a key to choose a character:')
+            choice = input('>>> ')
+            try:
+                choice = int(choice.strip())
+                chosen = True
+            except:
+                print('Please choose a number in the given range.')
 
     def play(self):
-        print("Press a key to choose a character!:")
-
+        self.select_character()
 
 def main():
     print("""Welcome to Magic Fight!

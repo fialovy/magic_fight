@@ -38,16 +38,50 @@ class Game:
                 )
 
     def select_character(self):
-        chosen = False
 
-        while not chosen:
-            print('Press a key to choose a character:')
+        def _attempt_choice():
+            print('Press a key to choose a character:\n')
+
+            # Opponents are keyed by name...
+            choices = dict(enumerate(self.opponents))
+            for idx, name in choices.items():
+                print(f'{idx}: {name.title()}\n')
+
             choice = input('>>> ')
             try:
                 choice = int(choice.strip())
-                chosen = True
             except:
                 print('Please choose a number in the given range.')
+                _attempt_choice()
+
+            # ...but the enum made this 'interface' easy to validate.
+            if choice not in choices:
+                print('Please choose a number in the given range.')
+                _attempt_choice()
+            else:
+                # Name key of chosen character
+                return choices[choice]
+
+        def _confirm_choice(name):
+            print(f'{self.opponents[name].bio}\n\n')
+            print(f'Confirm choice? Type y or n.')
+
+            confirm = input('>>> ')
+            try:
+                confirm = confirm.strip().lower()
+            except:
+                print('Please type "y" or "n"')
+                _confirm_choice(name)
+
+            if confirm == "y":
+                return name
+            else:
+                return self.select_character()
+
+        chosen = _confirm_choice(_attempt_choice())
+
+        self.player = self.opponents[chosen]
+        del self.opponents[chosen]
 
     def play(self):
         self.select_character()
@@ -72,6 +106,7 @@ def main():
     )
     game = Game()
     game.play()
+    # Reset characters?
 
 if __name__ == "__main__":
     main()

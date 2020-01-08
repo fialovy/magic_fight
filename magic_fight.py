@@ -73,10 +73,13 @@ class Game:
                 print('Please type "y" or "n"')
                 _confirm_choice(name)
 
-            if confirm == "y":
+            if confirm == 'y':
                 return name
-            else:
+            elif confirm == 'n':
                 return self.select_character()
+            else:
+                print('Please type "y" or "n"')
+                _confirm_choice(name)
 
         chosen = _confirm_choice(_attempt_choice())
 

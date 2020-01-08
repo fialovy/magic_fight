@@ -63,7 +63,7 @@ class Game:
                 return choices[choice]
 
         def _confirm_choice(name):
-            print(f'{self.opponents[name].bio}\n\n')
+            print(f'{self.opponents[name].bio}\n')
             print(f'Confirm choice? Type y or n.')
 
             confirm = input('>>> ')

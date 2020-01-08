@@ -82,12 +82,12 @@ class Game:
                 _confirm_choice(name)
 
         chosen = _confirm_choice(_attempt_choice())
-
-        self.player = self.opponents[chosen]
-        del self.opponents[chosen]
+        return chosen
 
     def play(self):
-        self.select_character()
+        chosen = self.select_character()
+        self.player = self.opponents[chosen]
+        del self.opponents[chosen]
 
 def main():
     print("""Welcome to Magic Fight!

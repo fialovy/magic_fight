@@ -1,7 +1,7 @@
 import json
 import os
 import random
-import re
+import time
 
 from character import Character
 
@@ -91,7 +91,10 @@ class Game:
         pass
 
     def _construct_player_spell_choices(self):
-        """For better or ugly, conform to le input helper..."""
+        """For better or ugly, conform to le input helper...
+
+        Return dict that is still useful to us in terms of hits.
+        """
         choices = {}
 
         for dimension, info in self.player.magic_info['deals'].items():
@@ -112,6 +115,7 @@ class Game:
         )
         self.opponent.life -= hit
         print(f'{self.opponent.name} takes {hit} {dimension} damage!\n')  # TODO: changing words here
+        time.sleep(1)
 
     def player_turn(self):
         spell_infos = self._construct_player_spell_choices()
@@ -131,12 +135,15 @@ class Game:
 
         self.opponent = random.choice(list(self.opponents.values()))
         print(f'\n{self.opponent.name} wants to duel!\n')
+        time.sleep(1)
         print('Ready?\n')
+        time.sleep(2)
 
         # well it is a start
         while self.player.life > 0 and self.opponent.life > 0:
             print(f'{self.player.name}: {"+"*self.player.life}')
             print(f'{self.opponent.name}: {"+"*self.opponent.life}\n')
+            time.sleep(1)
             self.player_turn()
             self.opponent_turn()
 

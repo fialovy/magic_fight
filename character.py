@@ -1,3 +1,7 @@
+import random
+import time
+
+
 class Character:
 
     def __init__(self, name, bio, magic_info, taunts):
@@ -8,7 +12,9 @@ class Character:
         self.life = 10
 
     def possibly_taunt(self):
-        """Depending on their chance of doing so (some characters are nicer),
-        pick and say a random taunt.
+        """Depending on their percent chance of doing so (some characters
+        are nicer), pick and say a random taunt.
         """
-        import pdb; pdb.set_trace()  
+        if 100 * self.taunts['chance'] > random.randint(0,100):
+            print(f'{self.name} says: {random.choice(self.taunts["taunts"])}\n')
+            time.sleep(2)

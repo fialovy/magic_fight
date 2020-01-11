@@ -37,32 +37,35 @@ class Game:
                     taunts = json.load(taunts_fl)
                 )
 
+    def attempt_input_choice(self, prompt, choices, capitalize_choice=True):
+        """Given a custom prompt and list of text choices, prompt user to
+        make a choice, and insist that they do so correctly until a proper
+        one can be returned.
+        """
+        print(prompt)
+
+        choices = dict(enumerate(choices))
+        for idx, item in choices.items():
+            print(f'{idx}: {item.title() if capitalize_choice else item}\n')
+
+        choice = input('>>> ')
+        try:
+            choice = int(choice.strip())
+        except:
+            print('Please choose a number in the given range.')
+            self.attempt_input_choice(prompt, choices, capitalize_choice)
+
+        # ...but the enum made this 'interface' easy to validate.
+        if choice not in choices:
+            print('Please choose a number in the given range.')
+            self.attempt_input_choice(prompt, choices, capitalize_choice)
+        else:
+            # Name key of chosen character
+            return choices[choice]
+
     def select_character(self):
 
-        def _attempt_choice():
-            print('Press a key to choose a character:\n')
-
-            # Opponents are keyed by name...
-            choices = dict(enumerate(self.opponents))
-            for idx, name in choices.items():
-                print(f'{idx}: {name.title()}\n')
-
-            choice = input('>>> ')
-            try:
-                choice = int(choice.strip())
-            except:
-                print('Please choose a number in the given range.')
-                _attempt_choice()
-
-            # ...but the enum made this 'interface' easy to validate.
-            if choice not in choices:
-                print('Please choose a number in the given range.')
-                _attempt_choice()
-            else:
-                # Name key of chosen character
-                return choices[choice]
-
-        def _confirm_choice(name):
+        def _confirm_character(name):
             print(f'{self.opponents[name].bio}\n')
             print(f'Confirm choice? Type y or n.')
 
@@ -71,7 +74,7 @@ class Game:
                 confirm = confirm.strip().lower()
             except:
                 print('Please type "y" or "n"')
-                _confirm_choice(name)
+                _confirm_character(name)
 
             if confirm == 'y':
                 return name
@@ -79,9 +82,15 @@ class Game:
                 return self.select_character()
             else:
                 print('Please type "y" or "n"')
-                _confirm_choice(name)
+                _confirm_character(name)
 
-        chosen = _confirm_choice(_attempt_choice())
+        chosen = self.attempt_input_choice(
+            prompt='Press a key to choose a character:\n',
+            choices=self.opponents,
+            capitalize_choice=True
+        )
+        chosen = _confirm_character(chosen)
+
         return chosen
 
     def play(self):

@@ -88,7 +88,7 @@ class Game:
         return chosen
 
     def opponent_turn(self):
-        pass
+        self.opponent.possibly_taunt()
 
     def _construct_player_spell_choices(self):
         """For better or ugly, conform to le input helper...

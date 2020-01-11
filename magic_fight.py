@@ -97,13 +97,28 @@ class Game:
     def opponent_turn(self):
         pass
 
+    def _construct_player_spell_choices(self):
+        """For better or ugly, conform to le input helper..."""
+        choices = {}
+
+        for dimension, info in self.player.magic_info['deals'].items():
+            # Not everyone can do every kind of magic, which means they
+            # might be better at fewer things.
+            if not info['spells']:
+                continue
+            choice_key = f'{random.choice(info["spells"])} ({dimension})'
+            choices[choice_key] = (dimension, info['amount'])
+
+        return choices
+
     def player_turn(self):
-        import pdb; pdb.set_trace()  
+        spell_infos = self._construct_player_spell_choices()
         spell = self.attempt_input_choice(
             prompt='Choose your spell:\n',
-            choices=spells,
+            choices=spell_infos,
             capitalize_choice=False
         )
+        dimension, max_hit = spell_infos[spell]
 
     def play(self):
         chosen = self.select_character()

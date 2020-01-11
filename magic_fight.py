@@ -111,6 +111,15 @@ class Game:
 
         return choices
 
+    def hit_opponent(self, dimension, max_hit):
+        """Hit opponent with up to the amount of given dimension's magic they take."""
+        hit = min(
+            self.opponent.magic_info['takes'][dimension]['amount'],
+            max_hit
+        )
+        self.opponent.life -= hit
+        print(f'{self.opponent.name} takes {hit} {dimension} damage!\n')  # TODO: changing words here
+
     def player_turn(self):
         spell_infos = self._construct_player_spell_choices()
         spell = self.attempt_input_choice(
@@ -119,6 +128,7 @@ class Game:
             capitalize_choice=False
         )
         dimension, max_hit = spell_infos[spell]
+        self.hit_opponent(dimension, max_hit)
 
     def play(self):
         chosen = self.select_character()

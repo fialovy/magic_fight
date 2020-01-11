@@ -1,5 +1,6 @@
 import json
 import os
+import random
 import re
 
 
@@ -31,7 +32,7 @@ class Game:
                  open(f'{namepath}/magic.json', 'r') as magic_fl, \
                  open(f'{namepath}/taunts.json', 'r') as taunts_fl:
                 self.opponents[name] = Character(
-                    name = name,
+                    name = name.title(),
                     bio = bio_fl.read().strip(),
                     magic_info = json.load(magic_fl),
                     taunts = json.load(taunts_fl)
@@ -93,10 +94,31 @@ class Game:
 
         return chosen
 
+    def opponent_turn(self):
+        pass
+
+    def player_turn(self):
+        pass
+
     def play(self):
         chosen = self.select_character()
         self.player = self.opponents[chosen]
+        # You cannot be your own opponent (not even you, Adrian).
         del self.opponents[chosen]
+
+        self.opponent = random.choice(list(self.opponents.values()))
+        print(f'{self.opponent.name} wants to duel!\n')
+        print('Ready?\n')
+
+        # well it is a start
+        while self.player.life > 0 and self.opponent.life > 0:
+            print(f'{self.player.name}: {"+"*self.player.life}')
+            print(f'{self.opponent.name}: {"+"*self.opponent.life}\n')
+            self.player_turn()
+            self.opponent_turn()
+
+        print(f'A prompt about how you either won or lost the game.')
+        return
 
 def main():
     print("""Welcome to Magic Fight!
@@ -113,7 +135,7 @@ def main():
 
         A character can likewise deal damage from one of the 6 kinds at a time.
         What kinds, and how much? You have to figure that out, too. Good luck!
-        \n\n
+        \n
         """
     )
     game = Game()

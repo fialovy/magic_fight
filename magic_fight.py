@@ -98,7 +98,12 @@ class Game:
         pass
 
     def player_turn(self):
-        pass
+        import pdb; pdb.set_trace()  
+        spell = self.attempt_input_choice(
+            prompt='Choose your spell:\n',
+            choices=spells,
+            capitalize_choice=False
+        )
 
     def play(self):
         chosen = self.select_character()
@@ -107,7 +112,7 @@ class Game:
         del self.opponents[chosen]
 
         self.opponent = random.choice(list(self.opponents.values()))
-        print(f'{self.opponent.name} wants to duel!\n')
+        print(f'\n{self.opponent.name} wants to duel!\n')
         print('Ready?\n')
 
         # well it is a start

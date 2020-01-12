@@ -147,5 +147,11 @@ class Game:
             self.player_turn()
             self.opponent_turn()
 
-        print(f'A prompt about how you either won or lost the game.')
+        if self.player.life < 0:
+            print(f'{self.opponent.name} has bested you. Game over.')
+            time.sleep(2)
+        else:
+            print(f'You have defeated {self.opponent}! Congratulations, Sorcerer.')
+            time.sleep(2)
+
         return

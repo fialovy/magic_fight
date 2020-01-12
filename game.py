@@ -131,7 +131,7 @@ class Game:
         dimension = random.choice(list(spell_info.keys()))
         spell = random.choice(spell_info[dimension]['spells'])
 
-        print(f'{self.opponent} chooses to {spell}')
+        print(f'{self.opponent.name} chooses: "{spell}"')
         time.sleep(1)
         self.hit(self.player, dimension, max_hit=spell_info[dimension]['amount'])
 
@@ -159,7 +159,7 @@ class Game:
             print(f'{self.opponent.name} has bested you. Game over.')
             time.sleep(2)
         else:
-            print(f'You have defeated {self.opponent}! Congratulations, Sorcerer.')
+            print(f'You have defeated {self.opponent.name}! Congratulations, Sorcerer.')
             time.sleep(2)
 
         return

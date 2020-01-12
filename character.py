@@ -17,4 +17,4 @@ class Character:
         """
         if 100 * self.taunts['chance'] > random.randint(0,100):
             print(f'{self.name} says: {random.choice(self.taunts["taunts"])}\n')
-            time.sleep(2)
+            time.sleep(1)

@@ -128,7 +128,12 @@ class Game:
         self.opponent.possibly_taunt()
 
         spell_info = self.opponent.magic_info['deals']
-        dimension = random.choice(list(spell_info.keys()))
+        # Recall that not everyone can deal every kind, as a cost to being
+        # super strong in some.
+        able_dimensions = [
+            dim for dim, info in spell_info.items() if info['spells']
+        ]
+        dimension = random.choice(able_dimensions)
         spell = random.choice(spell_info[dimension]['spells'])
 
         print(f'{self.opponent.name} chooses: "{spell}"')
@@ -152,10 +157,11 @@ class Game:
             print(f'{self.player.name}: {"+"*self.player.life}')
             print(f'{self.opponent.name}: {"+"*self.opponent.life}\n')
             time.sleep(1)
+            # todo: actually break out of this at the right time
             self.player_turn()
             self.opponent_turn()
 
-        if self.player.life < 0:
+        if self.player.life <= 0:
             print(f'{self.opponent.name} has bested you. Game over.')
             time.sleep(2)
         else:

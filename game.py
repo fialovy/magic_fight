@@ -153,19 +153,19 @@ class Game:
         time.sleep(2)
 
         # well it is a start
-        while self.player.life > 0 and self.opponent.life > 0:
+        while True:
             print(f'{self.player.name}: {"+"*self.player.life}')
             print(f'{self.opponent.name}: {"+"*self.opponent.life}\n')
             time.sleep(1)
-            # todo: actually break out of this at the right time
-            self.player_turn()
-            self.opponent_turn()
 
-        if self.player.life <= 0:
-            print(f'{self.opponent.name} has bested you. Game over.')
-            time.sleep(2)
-        else:
-            print(f'You have defeated {self.opponent.name}! Congratulations, Sorcerer.')
-            time.sleep(2)
+            self.player_turn()
+            if self.opponent.life <= 0:
+                print(f'You have defeated {self.opponent.name}! Congratulations, Sorcerer.')
+                time.sleep(2)
+
+            self.opponent_turn()
+            if self.player.life <= 0:
+                print(f'{self.opponent.name} has bested you. Game over.')
+                time.sleep(2)
 
         return

@@ -22,40 +22,44 @@ class Game:
             namepath = f'{CHARACTERS_DIR}/{name}'
 
             with open(f'{namepath}/bio.txt', 'r') as bio_fl, \
-                 open(f'{namepath}/magic.json', 'r') as magic_fl, \
-                 open(f'{namepath}/taunts.json', 'r') as taunts_fl:
+                    open(f'{namepath}/magic.json', 'r') as magic_fl, \
+                    open(f'{namepath}/taunts.json', 'r') as taunts_fl:
                 self.opponents[name] = Character(
-                    name = name.title(),
-                    bio = bio_fl.read().strip(),
-                    magic_info = json.load(magic_fl),
-                    taunts = json.load(taunts_fl)
+                    name=name.title(),
+                    bio=bio_fl.read().strip(),
+                    magic_info=json.load(magic_fl),
+                    taunts=json.load(taunts_fl)
                 )
 
-    def attempt_input_choice(self, prompt, choices, capitalize_choice=True):
+    def get_input_choice(self, prompt, choices, capitalize_choice=True):
         """Given a custom prompt and list of text choices, prompt user to
         make a choice, and insist that they do so correctly until a proper
         one can be returned.
         """
-        print(prompt)
 
         choices = dict(enumerate(choices))
-        for idx, item in choices.items():
-            print(f'{idx}: {item.title() if capitalize_choice else item}\n')
+        choice = None
 
-        choice = input('>>> ')
-        try:
-            choice = int(choice.strip())
-        except:
-            print('Please choose a number in the given range.')
-            self.attempt_input_choice(prompt, choices, capitalize_choice)
+        while choice is None:
+            print(prompt)
+            for idx, item in choices.items():
+                print(f'{idx}: {item.title() if capitalize_choice else item}\n')
 
-        # ...but the enum made this 'interface' easy to validate.
-        if choice not in choices:
-            print('Please choose a number in the given range.')
-            self.attempt_input_choice(prompt, choices, capitalize_choice)
-        else:
-            # Name key of chosen character
-            return choices[choice]
+            choice = input('>>> ')
+            try:
+                choice = int(choice.strip())
+            except Exception:
+                print('Please choose a number in the given range.')
+                choice = None
+                continue
+
+            # ...but the enum made this 'interface' easy to validate.
+            if choice not in choices:
+                print('Please choose a number in the given range.')
+                choice = None
+
+        # Name key of chosen character
+        return choices[choice]
 
     def select_character(self):
 
@@ -66,7 +70,7 @@ class Game:
             confirm = input('>>> ')
             try:
                 confirm = confirm.strip().lower()
-            except:
+            except Exception:
                 print('Please type "y" or "n"')
                 _confirm_character(name)
 
@@ -78,7 +82,7 @@ class Game:
                 print('Please type "y" or "n"')
                 _confirm_character(name)
 
-        chosen = self.attempt_input_choice(
+        chosen = self.get_input_choice(
             prompt='Press a key to choose a character:\n',
             choices=self.opponents,
             capitalize_choice=True
@@ -116,7 +120,7 @@ class Game:
 
     def player_turn(self):
         spell_infos = self._construct_player_spell_choices()
-        spell = self.attempt_input_choice(
+        spell = self.get_input_choice(
             prompt='Choose your spell:\n',
             choices=spell_infos,
             capitalize_choice=False

@@ -87,9 +87,6 @@ class Game:
 
         return chosen
 
-    def opponent_turn(self):
-        self.opponent.possibly_taunt()
-
     def _construct_player_spell_choices(self):
         """For better or ugly, conform to le input helper...
 
@@ -107,14 +104,14 @@ class Game:
 
         return choices
 
-    def hit_opponent(self, dimension, max_hit):
+    def hit(self, whom, dimension, max_hit):
         """Hit opponent with up to the amount of given dimension's magic they take."""
         hit = min(
-            self.opponent.magic_info['takes'][dimension]['amount'],
+            whom.magic_info['takes'][dimension]['amount'],
             max_hit
         )
-        self.opponent.life -= hit
-        print(f'{self.opponent.name} takes {hit} {dimension} damage!\n')  # TODO: changing words here
+        whom.life -= hit
+        print(f'{whom.name} takes {hit} {dimension} damage!\n')  # TODO: changing words here
         time.sleep(1)
 
     def player_turn(self):
@@ -125,7 +122,18 @@ class Game:
             capitalize_choice=False
         )
         dimension, max_hit = spell_infos[spell]
-        self.hit_opponent(dimension, max_hit)
+        self.hit(self.opponent, dimension, max_hit)
+
+    def opponent_turn(self):
+        self.opponent.possibly_taunt()
+
+        spell_info = self.opponent.magic_info['deals']
+        dimension = random.choice(list(spell_info.keys()))
+        spell = random.choice(spell_info[dimension]['spells'])
+
+        print(f'{self.opponent} chooses to {spell}')
+        time.sleep(1)
+        self.hit(self.player, dimension, max_hit=spell_info[dimension]['amount'])
 
     def play(self):
         chosen = self.select_character()

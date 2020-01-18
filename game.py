@@ -64,23 +64,26 @@ class Game:
     def select_character(self):
 
         def _confirm_character(name):
-            print(f'{self.opponents[name].bio}\n')
-            print(f'Confirm choice? Type y or n.')
+            confirmed = False
 
-            confirm = input('>>> ')
-            try:
-                confirm = confirm.strip().lower()
-            except Exception:
-                print('Please type "y" or "n"')
-                _confirm_character(name)
+            while not confirmed:
+                print(f'{self.opponents[name].bio}\n')
+                print(f'Confirm choice? Type y or n.')
 
-            if confirm == 'y':
-                return name
-            elif confirm == 'n':
-                return self.select_character()
-            else:
-                print('Please type "y" or "n"')
-                _confirm_character(name)
+                confirm = input('>>> ')
+                try:
+                    confirm = confirm.strip().lower()
+                except Exception:
+                    print('Please type "y" or "n"')
+                    continue
+
+                if confirm == 'y':
+                    return name
+                elif confirm == 'n':
+                    return self.select_character()
+                else:
+                    print('Please type "y" or "n"')
+                    continue
 
         chosen = self.get_input_choice(
             prompt='Press a key to choose a character:\n',

@@ -24,12 +24,24 @@ class Game:
             with open(f'{namepath}/bio.txt', 'r') as bio_fl, \
                     open(f'{namepath}/magic.json', 'r') as magic_fl, \
                     open(f'{namepath}/taunts.json', 'r') as taunts_fl:
-                self.opponents[name] = Character(
-                    name=name.title(),
-                    bio=bio_fl.read().strip(),
-                    magic_info=json.load(magic_fl),
-                    taunts=json.load(taunts_fl)
-                )
+                bio=bio_fl.read().strip()
+                magic_info=json.load(magic_fl)
+                taunts=json.load(taunts_fl)
+
+            special_abilities = None
+            special_path = f'{namepath}/special.json'
+            # Boo hoo; not everyone has special abilities right now.
+            if os.path.exists(special_path):
+                with open(special_path, 'r') as special_fl:
+                    special_abilities=json.load(special_fl)
+
+            self.opponents[name] = Character(
+                name=name.title(),
+                bio=bio,
+                magic_info=magic_info,
+                taunts=taunts,
+                special_abilities=special_abilities
+            )
 
     def get_input_choice(self, prompt, choices, capitalize_choice=True):
         """Given a custom prompt and list of text choices, prompt user to
@@ -108,6 +120,9 @@ class Game:
                 continue
             choice_key = f'{random.choice(info["spells"])} ({dimension})'
             choices[choice_key] = (dimension, info['amount'])
+
+        for ability_name, info in self.player.special_abilities.items():
+            choices[ability_name] = (info['description'], info['effect'])
 
         return choices
 

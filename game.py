@@ -3,10 +3,15 @@ import os
 import random
 import time
 
+from collections import namedtuple
+
 from character import Character
 
 
 CHARACTERS_DIR = 'characters'
+
+SpellChoice = namedtuple('SpellChoice', ['dimension', 'hit'])
+SpecialChoice = namedtuple('SpecialChoice', ['description', 'effect'])
 
 
 class Game:
@@ -28,7 +33,7 @@ class Game:
                 magic_info=json.load(magic_fl)
                 taunts=json.load(taunts_fl)
 
-            special_abilities = None
+            special_abilities = {}
             special_path = f'{namepath}/special.json'
             # Boo hoo; not everyone has special abilities right now.
             if os.path.exists(special_path):
@@ -119,10 +124,12 @@ class Game:
             if not info['spells']:
                 continue
             choice_key = f'{random.choice(info["spells"])} ({dimension})'
-            choices[choice_key] = (dimension, info['amount'])
+            choices[choice_key] = SpellChoice(
+                dimension=dimension, hit=info['amount'])
 
         for ability_name, info in self.player.special_abilities.items():
-            choices[ability_name] = (info['description'], info['effect'])
+            choices[ability_name] = SpecialChoice(
+                description=info['description'], effect=info['effect'])
 
         return choices
 
@@ -143,8 +150,14 @@ class Game:
             choices=spell_infos,
             capitalize_choice=False
         )
-        dimension, max_hit = spell_infos[spell]
-        self.hit(self.opponent, dimension, max_hit)
+        choice = spell_infos[spell]
+
+        if isinstance(choice, SpellChoice):
+            dimension, max_hit = choice.dimension, choice.hit
+            self.hit(self.opponent, dimension, max_hit)
+
+        if isinstance(choice, SpecialChoice):
+            description, effect = choice.description, choice.effect
 
     def opponent_turn(self):
         self.opponent.possibly_taunt()

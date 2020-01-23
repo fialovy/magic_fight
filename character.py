@@ -7,12 +7,13 @@ GAME_LIFE = 20
 
 class Character:
 
-    def __init__(self, name, bio, magic_info, taunts, special_abilities):
+    def __init__(self, name, bio, magic_info, taunts):
         self.name = name
         self.bio = bio
         self.magic_info = magic_info
         self.taunts = taunts
-        self.special_abilities = special_abilities
+
+        self.special_abilities_info = {}
         self.life = GAME_LIFE
 
     def possibly_taunt(self):

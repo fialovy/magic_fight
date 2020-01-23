@@ -78,36 +78,45 @@ class Game:
         # Name key of chosen character
         return choices[choice]
 
+    def confirm_input_choice(self, choice, prompt, deny_func):
+        """Print prompt presumably associated with some choice
+        (e.g., info about a chosen character), and ask for y/n confirmation.
+
+        Call given deny_func to custom 'reset' if they do not confirm.
+        """
+        confirmed = False
+
+        while not confirmed:
+            print(prompt)
+            print(f'Confirm choice? Type y or n.')
+
+            confirm = input('>>> ')
+            try:
+                confirm = confirm.strip().lower()
+            except Exception:
+                print('Please type "y" or "n"')
+                continue
+
+            if confirm == 'y':
+                return choice
+            elif confirm == 'n':
+                return deny_func()
+            else:
+                print('Please type "y" or "n"')
+                continue
+
     def select_character(self):
-
-        def _confirm_character(name):
-            confirmed = False
-
-            while not confirmed:
-                print(f'{self.opponents[name].bio}\n')
-                print(f'Confirm choice? Type y or n.')
-
-                confirm = input('>>> ')
-                try:
-                    confirm = confirm.strip().lower()
-                except Exception:
-                    print('Please type "y" or "n"')
-                    continue
-
-                if confirm == 'y':
-                    return name
-                elif confirm == 'n':
-                    return self.select_character()
-                else:
-                    print('Please type "y" or "n"')
-                    continue
 
         chosen = self.get_input_choice(
             prompt='Press a key to choose a character:\n',
             choices=self.opponents,
             capitalize_choice=True
         )
-        chosen = _confirm_character(chosen)
+        chosen = self.confirm_input_choice(
+            choice=chosen,
+            prompt=f'{self.opponents[chosen].bio}\n',
+            deny_func=self.select_character
+        )
 
         return chosen
 
@@ -158,6 +167,12 @@ class Game:
 
         if isinstance(choice, SpecialChoice):
             description, effect = choice.description, choice.effect
+            self.confirm_input_choice(
+                choice=spell,
+                prompt=description,
+                deny_func=self.player_turn  # this seems wrong...
+            )
+            # call effect function
 
     def opponent_turn(self):
         self.opponent.possibly_taunt()

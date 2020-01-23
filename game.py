@@ -6,7 +6,7 @@ import time
 from character import Character
 
 
-CHARACTERS_DIR = 'character_infos'
+CHARACTERS_DIR = 'characters'
 
 
 class Game:

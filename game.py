@@ -170,7 +170,9 @@ class Game:
                 deny_func=self.player_turn,  # this seems wrong...
             )
             ability_func = getattr(special_abilities, choice.effect)
-            ability_func(self.player)
+            ability_result = ability_func(self.player)
+            if ability_result is not None:
+                self.player = ability_result
 
     def opponent_turn(self):
         self.opponent.possibly_taunt()

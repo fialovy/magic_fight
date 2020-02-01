@@ -3,7 +3,8 @@ from game import Game
 
 
 def main():
-    print(f"""Welcome to Magic Fight!
+    print(
+        f"""Welcome to Magic Fight!
 
         Choose your sorcerer, figure out their strengths and weaknesses,
         and try to figure out how to beat everyone else!

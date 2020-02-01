@@ -3,6 +3,8 @@ import os
 import random
 import time
 
+import special_abilities
+
 from collections import namedtuple
 
 from character import Character
@@ -173,7 +175,8 @@ class Game:
                 prompt=description,
                 deny_func=self.player_turn  # this seems wrong...
             )
-            # call effect function
+            ability_func = getattr(special_abilities, choice.effect)
+            ability_func(self.player)
 
     def opponent_turn(self):
         self.opponent.possibly_taunt()

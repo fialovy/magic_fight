@@ -33,8 +33,7 @@ class Character:
         """
         if 100 * chance > random.randint(0, 100):
             abilities = [
-                ability['effect'] for ability in
-                    self.special_abilities_info.values()
+                ability["effect"] for ability in self.special_abilities_info.values()
             ]
 
             if not abilities:

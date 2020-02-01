@@ -11,6 +11,7 @@ from character import Character
 
 
 CHARACTERS_DIR = "characters"
+OPPONENT_SPECIAL_ABILITY_CHANCE = 0.2
 
 SpellChoice = namedtuple("SpellChoice", ["dimension", "hit"])
 SpecialChoice = namedtuple("SpecialChoice", ["description", "effect"])
@@ -176,6 +177,11 @@ class Game:
 
     def opponent_turn(self):
         self.opponent.possibly_taunt()
+        special_result = self.opponent.possibly_activate_special_ability(
+            OPPONENT_SPECIAL_ABILITY_CHANCE
+        )
+        if special_result is not None:
+            self.opponent = special_result
 
         spell_info = self.opponent.magic_info["deals"]
         # Recall that not everyone can deal every kind, as a cost to being

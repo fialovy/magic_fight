@@ -20,18 +20,7 @@ class Game:
 
     def set_up_characters(self):
         for name in os.listdir(f"{CHARACTERS_DIR}"):
-            namepath = f"{CHARACTERS_DIR}/{name}"
-
-            with open(f"{namepath}/bio.txt", "r") as bio_fl, open(
-                f"{namepath}/magic.json", "r"
-            ) as magic_fl, open(f"{namepath}/taunts.json", "r") as taunts_fl:
-                bio = bio_fl.read().strip()
-                magic_info = json.load(magic_fl)
-                taunts = json.load(taunts_fl)
-
-            character = Character(
-                name=name.title(), bio=bio, magic_info=magic_info, taunts=taunts
-            )
+            character = Character(name=name.title())
             self.opponents[name] = character
 
     def get_input_choice(self, prompt, choices, capitalize_choice=True):
@@ -39,7 +28,6 @@ class Game:
         make a choice, and insist that they do so correctly until a proper
         one can be returned.
         """
-
         choices = dict(enumerate(choices))
         choice = None
 

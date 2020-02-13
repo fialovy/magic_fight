@@ -8,20 +8,33 @@ import special_abilities
 from game_macros import CHARACTERS_DIR, GAME_LIFE
 
 class Character:
-    def __init__(self, name, bio, magic_info, taunts):
-        self.name = name
-        self.bio = bio
-        self.magic_info = magic_info
-        self.taunts = taunts
+
+    def __init__(self, name, special_namepath=None):
         self.life = GAME_LIFE
+        self.name = name
+        self.namepath = special_namepath or f"{CHARACTERS_DIR}/{name.lower()}"
 
-        self.set_special_abilities()
+        self._set_bio()
+        self._set_magic_info()
+        self._set_taunts()
+        self._set_special_abilities()
 
-    def set_special_abilities(self):
+    def _set_bio(self):
+        with open(f"{self.namepath}/bio.txt", "r") as bio_fl:
+            self.bio = bio_fl.read().strip()
+
+    def _set_magic_info(self):
+        with open(f"{self.namepath}/magic.json", "r") as magic_fl:
+            self.magic_info = json.load(magic_fl)
+
+    def _set_taunts(self):
+        with open(f"{self.namepath}/taunts.json", "r") as taunts_fl:
+            self.taunts = json.load(taunts_fl)
+
+    def _set_special_abilities(self):
         self.special_abilities_info = {}
 
-        namepath = f"{CHARACTERS_DIR}/{self.name.lower()}"
-        special_path = f"{namepath}/special.json"
+        special_path = f"{self.namepath}/special.json"
         # Boo hoo; not everyone has special abilities right now.
         if os.path.exists(special_path):
             with open(special_path, "r") as special_fl:

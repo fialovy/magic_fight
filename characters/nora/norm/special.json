@@ -1,0 +1,6 @@
+{
+    "Become Nora!": {
+        "description": "At the cost of 1 life point, become Nora once more.",
+        "effect": "change_to_nora"
+    }
+}

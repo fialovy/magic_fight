@@ -5,16 +5,9 @@ import time
 
 import special_abilities
 
-from collections import namedtuple
-
 from character import Character
-
-
-CHARACTERS_DIR = "characters"
-OPPONENT_SPECIAL_ABILITY_CHANCE = 0.2
-
-SpellChoice = namedtuple("SpellChoice", ["dimension", "hit"])
-SpecialChoice = namedtuple("SpecialChoice", ["description", "effect"])
+from game_macros import CHARACTERS_DIR, OPPONENT_SPECIAL_ABILITY_CHANCE
+from game_macros import SpellChoice, SpecialChoice
 
 
 class Game:
@@ -27,26 +20,7 @@ class Game:
 
     def set_up_characters(self):
         for name in os.listdir(f"{CHARACTERS_DIR}"):
-            namepath = f"{CHARACTERS_DIR}/{name}"
-
-            with open(f"{namepath}/bio.txt", "r") as bio_fl, open(
-                f"{namepath}/magic.json", "r"
-            ) as magic_fl, open(f"{namepath}/taunts.json", "r") as taunts_fl:
-                bio = bio_fl.read().strip()
-                magic_info = json.load(magic_fl)
-                taunts = json.load(taunts_fl)
-
-            character = Character(
-                name=name.title(), bio=bio, magic_info=magic_info, taunts=taunts
-            )
-
-            special_path = f"{namepath}/special.json"
-            # Boo hoo; not everyone has special abilities right now.
-            if os.path.exists(special_path):
-                with open(special_path, "r") as special_fl:
-                    special_abilities_info = json.load(special_fl)
-                character.special_abilities_info = special_abilities_info
-
+            character = Character(name=name.title())
             self.opponents[name] = character
 
     def get_input_choice(self, prompt, choices, capitalize_choice=True):
@@ -54,7 +28,6 @@ class Game:
         make a choice, and insist that they do so correctly until a proper
         one can be returned.
         """
-
         choices = dict(enumerate(choices))
         choice = None
 

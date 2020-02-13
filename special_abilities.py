@@ -10,11 +10,6 @@ def change_to_norm(nora):
     from character import Character
     from game import CHARACTERS_DIR
 
-    # Gross, I know, but I also don't want the opponent to do this
-    # extra times.
-    if nora.name == "Norm":
-        return
-
     nora.life -= 1
 
     namepath = f"{CHARACTERS_DIR}/nora/norm"
@@ -38,11 +33,6 @@ def change_to_norm(nora):
 
 
 def change_to_nora(norm):
-    # Gross, I know, but I also don't want the opponent to do this
-    # extra times.
-    if norm.name == "Nora":
-        return
-
     norm.life -= 1
     breakpoint() 
     nora.life = norm.life

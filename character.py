@@ -1,10 +1,11 @@
+import json
+import os
 import random
 import time
 
 import special_abilities
 
-GAME_LIFE = 20
-
+from game_macros import CHARACTERS_DIR, GAME_LIFE
 
 class Character:
     def __init__(self, name, bio, magic_info, taunts):
@@ -12,9 +13,20 @@ class Character:
         self.bio = bio
         self.magic_info = magic_info
         self.taunts = taunts
-
-        self.special_abilities_info = {}
         self.life = GAME_LIFE
+
+        self.set_special_abilities()
+
+    def set_special_abilities(self):
+        self.special_abilities_info = {}
+
+        namepath = f"{CHARACTERS_DIR}/{self.name.lower()}"
+        special_path = f"{namepath}/special.json"
+        # Boo hoo; not everyone has special abilities right now.
+        if os.path.exists(special_path):
+            with open(special_path, "r") as special_fl:
+                special_abilities_info = json.load(special_fl)
+            self.special_abilities_info = special_abilities_info
 
     def possibly_taunt(self):
         """Depending on their percent chance of doing so (some characters

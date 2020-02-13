@@ -35,3 +35,19 @@ def change_to_norm(nora):
     time.sleep(1)
 
     return norm
+
+
+def change_to_nora(norm):
+    # Gross, I know, but I also don't want the opponent to do this
+    # extra times.
+    if norm.name == "Nora":
+        return
+
+    norm.life -= 1
+    breakpoint() 
+    nora.life = norm.life
+
+    print("Norm becomes Nora!")
+    time.sleep(1)
+
+    return nora

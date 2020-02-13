@@ -5,16 +5,9 @@ import time
 
 import special_abilities
 
-from collections import namedtuple
-
 from character import Character
-
-
-CHARACTERS_DIR = "characters"
-OPPONENT_SPECIAL_ABILITY_CHANCE = 0.2
-
-SpellChoice = namedtuple("SpellChoice", ["dimension", "hit"])
-SpecialChoice = namedtuple("SpecialChoice", ["description", "effect"])
+from game_macros import CHARACTERS_DIR, OPPONENT_SPECIAL_ABILITY_CHANCE
+from game_macros import SpellChoice, SpecialChoice
 
 
 class Game:
@@ -39,14 +32,6 @@ class Game:
             character = Character(
                 name=name.title(), bio=bio, magic_info=magic_info, taunts=taunts
             )
-
-            special_path = f"{namepath}/special.json"
-            # Boo hoo; not everyone has special abilities right now.
-            if os.path.exists(special_path):
-                with open(special_path, "r") as special_fl:
-                    special_abilities_info = json.load(special_fl)
-                character.special_abilities_info = special_abilities_info
-
             self.opponents[name] = character
 
     def get_input_choice(self, prompt, choices, capitalize_choice=True):

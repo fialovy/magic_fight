@@ -7,8 +7,8 @@ import special_abilities
 
 from game_macros import CHARACTERS_DIR, GAME_LIFE, did_it_happen
 
-class Character:
 
+class Character:
     def __init__(self, name, special_namepath=None):
         self.life = GAME_LIFE
         self.name = name

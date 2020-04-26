@@ -1,8 +1,11 @@
 """
 Special abilities to load from one spot.
 """
+import copy
 import json
+import random
 import time
+import upsidedown
 
 from game_macros import did_it_happen
 
@@ -47,6 +50,18 @@ def _potion_life_effect():
     return sign * random.choice(range(1, 6))
 
 
+def _drunkify_spells(magic_info):
+    """Flip the given spell descriptions upside down, because we are drunk."""
+    drunken_magic = copy.deepcopy(magic_info)
+
+    for dimension_info in drunken_magic["deals"].values():
+        dimension_info["spells"] = list(
+            map(upsidedown.transform, dimension_info["spells"])
+        )
+
+    return drunken_magic
+
+
 def potionify(winston):
     from character import Character
 
@@ -55,11 +70,11 @@ def potionify(winston):
 
     drunk_winston = Character(name="Winston")
     drunk_winston.life = winston.life
-    #drunk_winston.magic/special abilities = ...
+    drunk_winston.magic_info = _drunkify_spells(drunk_winston.magic_info)
 
     positive_effect = effect > 0
     condrunktion = "and" if positive_effect else "but"
-    action = "gives him" if positive_effect else ""
+    action = "gives him" if positive_effect else "costs him"
     # TODO: make comments to choose from for this, too.
     commentary = "That's some good stuff" if positive_effect else "Poor Winston."
     print(

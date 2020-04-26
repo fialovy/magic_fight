@@ -3,8 +3,6 @@ import os
 import random
 import time
 
-import special_abilities
-
 from game_macros import CHARACTERS_DIR, GAME_LIFE, did_it_happen
 
 
@@ -59,6 +57,8 @@ class Character:
         Chance is hard-coded for this now because I am sad.
         """
         if did_it_happen(chance):
+            import special_abilities
+
             abilities = [
                 ability["effect"] for ability in self.special_abilities_info.values()
             ]

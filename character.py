@@ -5,7 +5,7 @@ import time
 
 import special_abilities
 
-from game_macros import CHARACTERS_DIR, GAME_LIFE
+from game_macros import CHARACTERS_DIR, GAME_LIFE, did_it_happen
 
 class Character:
 
@@ -45,10 +45,12 @@ class Character:
         """Depending on their percent chance of doing so (some characters
         are nicer), pick and say a random taunt.
         """
-        if 100 * self.taunts["chance"] > random.randint(0, 100):
+        if did_it_happen(self.taunts["chance"]):
             print(f'{self.name} says: {random.choice(self.taunts["taunts"])}\n')
             time.sleep(1)
 
+    # XXX: it would probably be better to possibly DE-activate special ability
+    # to be more universal than Norm/Nora
     def possibly_activate_special_ability(self, chance):
         """Depending on percent chance, possibly auto-activiate a special ability.
 
@@ -56,7 +58,7 @@ class Character:
 
         Chance is hard-coded for this now because I am sad.
         """
-        if 100 * chance > random.randint(0, 100):
+        if did_it_happen(chance):
             abilities = [
                 ability["effect"] for ability in self.special_abilities_info.values()
             ]

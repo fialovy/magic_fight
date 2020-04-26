@@ -1,8 +1,10 @@
+"""
+Special abilities to load from one spot.
+"""
 import json
 import time
 
-
-# Special abilities to load from one spot.
+from game_macros import did_it_happen
 
 
 def change_to_norm(nora):
@@ -35,3 +37,35 @@ def change_to_nora(norm):
     time.sleep(1)
 
     return nora
+
+
+def _potion_life_effect():
+    """Return a positive or negative integer value to add to poor,
+    drunken Winston's current life value.
+    """
+    sign = -1 if did_it_happen(0.5) else 1
+    return sign * random.choice(range(1, 6))
+
+
+def potionify(winston):
+    from character import Character
+
+    effect = _potion_life_effect()
+    winston.life += effect
+
+    drunk_winston = Character(name="Winston")
+    drunk_winston.life = winston.life
+    #drunk_winston.magic/special abilities = ...
+
+    positive_effect = effect > 0
+    condrunktion = "and" if positive_effect else "but"
+    action = "gives him" if positive_effect else ""
+    # TODO: make comments to choose from for this, too.
+    commentary = "That's some good stuff" if positive_effect else "Poor Winston."
+    print(
+        f"Winston gets drunk, {condrunktion} this time it {action} "
+        f"{abs(effect)} life points! {commentary}."
+    )
+    time.sleep(1)
+
+    return drunk_winston

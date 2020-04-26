@@ -15,4 +15,4 @@ def did_it_happen(chance):
     """Helper for all kinds of things that occur at a given chance between
     0 and 1.
     """
-    return 100 * chance > random.randint(0, 100):
+    return 100 * chance > random.randint(0, 100)

@@ -7,12 +7,12 @@ import random
 import time
 import upsidedown
 
+from character import Character
 from game_macros import did_it_happen
 
 
 def change_to_norm(nora):
     # Circular imports are an unfortunate thing...
-    from character import Character
     from game import CHARACTERS_DIR
 
     nora.life -= 1
@@ -28,8 +28,6 @@ def change_to_norm(nora):
 
 
 def change_to_nora(norm):
-    from character import Character
-
     norm.life -= 1
 
     # Re-instantiate because why not. Only life changes.
@@ -63,14 +61,13 @@ def _drunkify_spells(magic_info):
 
 
 def potionify(winston):
-    from character import Character
-
     effect = _potion_life_effect()
     winston.life += effect
 
     drunk_winston = Character(name="Winston")
     drunk_winston.life = winston.life
     drunk_winston.magic_info = _drunkify_spells(drunk_winston.magic_info)
+    drunk_winston.special_abilities_info = {}
 
     positive_effect = effect > 0
     condrunktion = "and" if positive_effect else "but"

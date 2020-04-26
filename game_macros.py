@@ -11,7 +11,7 @@ SpellChoice = namedtuple("SpellChoice", ["dimension", "hit"])
 SpecialChoice = namedtuple("SpecialChoice", ["description", "effect"])
 
 
-def did_it_happen(chance):
+def did_it_happen(chance=0.5):
     """Helper for all kinds of things that occur at a given chance between
     0 and 1.
     """

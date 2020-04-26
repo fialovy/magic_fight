@@ -42,9 +42,9 @@ def change_to_nora(norm):
 
 def _potion_life_effect():
     """Return a positive or negative integer value to add to poor,
-    drunken Winston's current life value.
+    drunken character's current life value.
     """
-    sign = -1 if did_it_happen(0.5) else 1
+    sign = -1 if did_it_happen() else 1
     return sign * random.choice(range(1, 6))
 
 
@@ -60,24 +60,50 @@ def _drunkify_spells(magic_info):
     return drunken_magic
 
 
-def potionify(winston):
-    effect = _potion_life_effect()
-    winston.life += effect
-
-    drunk_winston = Character(name="Winston")
-    drunk_winston.life = winston.life
-    drunk_winston.magic_info = _drunkify_spells(drunk_winston.magic_info)
-    drunk_winston.special_abilities_info = {}
-
+def _print_potion_effect(character_name, effect):
     positive_effect = effect > 0
     condrunktion = "and" if positive_effect else "but"
-    action = "gives him" if positive_effect else "costs him"
+    action = "gives" if positive_effect else "costs"
+
     # TODO: make comments to choose from for this, too.
-    commentary = "That's some good stuff" if positive_effect else "Poor Winston."
+    commentary = (
+        "That's some good stuff" if positive_effect else f"Poor {character_name}."
+    )
     print(
-        f"Winston gets drunk, {condrunktion} this time it {action} "
+        f"{character_name} gets drunk, {condrunktion} this time it {action} "
         f"{abs(effect)} life points! {commentary}."
     )
     time.sleep(1)
 
-    return drunk_winston
+
+def potionify(drinker):
+    effect = _potion_life_effect()
+    drinker.life += effect
+
+    drunkard = Character(name=drinker.name)
+    drunkard.life = drinker.life
+    drunkard.magic_info = _drunkify_spells(drunkard.magic_info)
+    drunkard._set_special_abilities(f"{drunkard.namepath}/drunk_special.json")
+    _print_potion_effect(drunkard.name, effect)
+
+    return drunkard
+
+
+def attempt_sobering(drinker):
+    """was it a good idea?"""
+    if did_it_happen():
+        # Restore defaults!
+        sober = Character(name=drinker.name)
+        sober.life = drinker.life + 1
+        print("\nIt worked! You have magically sobered up and gained 1 life point!")
+        time.sleep(1)
+
+        return sober
+
+    print(
+        f"\nThere is no shortcut to sobriety, {drinker.name}. But this crappy "
+        f"concoction did manage to take a life point from you."
+    )
+    drinker.life -= 1
+
+    return drinker

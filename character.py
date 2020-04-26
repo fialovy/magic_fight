@@ -29,10 +29,10 @@ class Character:
         with open(f"{self.namepath}/taunts.json", "r") as taunts_fl:
             self.taunts = json.load(taunts_fl)
 
-    def _set_special_abilities(self):
+    def _set_special_abilities(self, special_path=None):
         self.special_abilities_info = {}
 
-        special_path = f"{self.namepath}/special.json"
+        special_path = special_path or f"{self.namepath}/special.json"
         # Boo hoo; not everyone has special abilities right now.
         if os.path.exists(special_path):
             with open(special_path, "r") as special_fl:

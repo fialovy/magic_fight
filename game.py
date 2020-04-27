@@ -79,7 +79,6 @@ class Game:
                 continue
 
     def select_character(self):
-
         chosen = self.get_input_choice(
             prompt="Press a key to choose a character:\n",
             choices=self.opponents,

@@ -2,6 +2,10 @@
 
 Very simple text loop game. Cast a spell and stuff!
 
-`python3 magic_fight.py`
+For the love of gods, make sure it's Python 3+. Then:
+
+`pip install -r requirements.txt`
+
+`python magic_fight.py`
 
 ![Character doodles](images/readme_characters.png)

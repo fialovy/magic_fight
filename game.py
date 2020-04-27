@@ -49,7 +49,6 @@ class Game:
                 print("Please choose a number in the given range.")
                 choice = None
 
-        # Name key of chosen character
         return choices[choice]
 
     def confirm_input_choice(self, choice, prompt, deny_func):

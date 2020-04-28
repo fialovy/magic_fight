@@ -15,6 +15,7 @@ class Character:
         self._set_bio()
         self._set_magic_info()
         self._set_taunts()
+        self._set_reactions()
         self._set_special_abilities()
 
     def _set_bio(self):
@@ -28,6 +29,14 @@ class Character:
     def _set_taunts(self):
         with open(f"{self.namepath}/taunts.json", "r") as taunts_fl:
             self.taunts = json.load(taunts_fl)
+
+    def _set_reactions(self):
+        reactions_path = f"{self.namepath}/reactions.json"
+        if os.path.exists(reactions_path):
+            with open(reactions_path, "r") as reactions_fl:
+                self.reactions = json.load(reactions_fl)
+        else:
+            self.reactions = None
 
     def _set_special_abilities(self, special_path=None):
         self.special_abilities_info = {}
@@ -47,8 +56,16 @@ class Character:
             print(f'{self.name} says: {random.choice(self.taunts["taunts"])}\n')
             time.sleep(1)
 
-    # XXX: it would probably be better to possibly DE-activate special ability
-    # to be more universal than Norm/Nora
+    def possibly_react(self):
+        """If character can verbally react to a hit (some are more vocal),
+        do so based on their chance.
+        """
+        if self.reactions is not None and did_it_happen(self.reactions["chance"]):
+            print(
+                f"{self.name} says: " f'{random.choice(self.reactions["reactions"])}\n'
+            )
+            time.sleep(1)
+
     def possibly_activate_special_ability(self, chance):
         """Depending on percent chance, possibly auto-activiate a special ability.
 

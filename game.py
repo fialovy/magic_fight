@@ -120,9 +120,7 @@ class Game:
         """
         hit = min(whom.magic_info["takes"][dimension]["amount"], max_hit)
         whom.life -= hit
-        print(
-            f"{whom.name} takes {hit} {dimension} damage!\n"
-        )  # TODO: changing words here
+        print(f"{whom.name} takes {hit} {dimension} damage!\n")
         time.sleep(1)
 
     def player_turn(self):

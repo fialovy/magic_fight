@@ -133,6 +133,7 @@ class Game:
         if isinstance(choice, SpellChoice):
             dimension, max_hit = choice.dimension, choice.hit
             self.hit(self.opponent, dimension, max_hit)
+            self.opponent.possibly_react()
 
         if isinstance(choice, SpecialChoice):
             description, effect = choice.description, choice.effect
@@ -148,6 +149,7 @@ class Game:
 
     def opponent_turn(self):
         self.opponent.possibly_taunt()
+
         special_result = self.opponent.possibly_activate_special_ability(
             OPPONENT_SPECIAL_ABILITY_CHANCE
         )

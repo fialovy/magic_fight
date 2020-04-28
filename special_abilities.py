@@ -100,10 +100,11 @@ def attempt_sobering(drinker):
 
         return sober
 
+    drinker.life -= 1
     print(
         f"\nThere is no shortcut to sobriety, {drinker.name}. But this crappy "
         f"concoction did manage to take a life point from you."
     )
-    drinker.life -= 1
+    time.sleep(1)
 
     return drinker

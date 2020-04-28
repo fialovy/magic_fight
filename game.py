@@ -115,7 +115,9 @@ class Game:
         return choices
 
     def hit(self, whom, dimension, max_hit):
-        """Hit opponent with up to the amount of given dimension's magic they take."""
+        """Hit character (player or opponent) with up to the amount of given
+        dimension's magic they take.
+        """
         hit = min(whom.magic_info["takes"][dimension]["amount"], max_hit)
         whom.life -= hit
         print(

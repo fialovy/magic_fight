@@ -34,26 +34,27 @@
         "ordered": {
             "amount": 3,
             "spells": [
-                "FINISH ME",
-                "FINISH ME",
-                "FINISH ME",
-                "FINISH ME"
+                "Align the orbs with your eyes, then carefully, carefully build tension until-",
+                "Emit dark fractals",
+                "Create a great conic shadow that rapidly removes the air from the room",
+                "Float the orbs along a perfectly straight line. Meanwhile, the ground follows suit and pulls apart into a void"
             ]
         },
         "hot": {
             "amount": 1,
             "spells": [
-                "FINISH ME",
-                "FINISH ME",
-                "FINISH ME"
+                "Emit a vortex of fire from your non-dominant hand",
+                "Superheat both orbs until the surrounding twenty metres are uninhabitable",
+                "Feuerball!",
+                "hienovarainen tuhopoltto."
             ]
         },
         "cold": {
             "amount": 1,
             "spells": [
-                "FINISH ME",
-                "FINISH ME",
-                "FINISH ME"
+                "Turn the orbs white. An actual wintry whiteout ensues.",
+                "Turn the orbs black. All heat is sucked from the air and those in it.",
+                "Shoot perfectly formed ice crystals"
             ]
         }
     },

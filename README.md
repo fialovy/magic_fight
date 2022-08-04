@@ -1,6 +1,6 @@
 # magic_fight
 
-Very simple text loop game. Cast a spell and stuff!
+Very simple text loop game. Cast a spell!
 
 For the love of gods, make sure it's Python 3+. Then:
 
@@ -8,4 +8,4 @@ For the love of gods, make sure it's Python 3+. Then:
 
 `python magic_fight.py`
 
-![Character doodles](images/readme_characters.png)
+![Character doodles](images/neat.png)

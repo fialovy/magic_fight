@@ -86,7 +86,7 @@ class Game:
         )
         chosen = self.confirm_input_choice(
             choice=chosen,
-            prompt=f"{self.opponents[chosen].bio}\n",
+            prompt=f"{self.opponents[chosen].ascii}\n\n{self.opponents[chosen].bio}\n",
             deny_func=self.select_character,
         )
 

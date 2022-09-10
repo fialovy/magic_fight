@@ -9,7 +9,6 @@ from character import Character
 from game_macros import did_it_happen
 
 
-
 class SpecialAbility:
     # TODO: fix this class; it seems contrived
     def __init__(self, player, opponent, effect):
@@ -18,13 +17,17 @@ class SpecialAbility:
         self.effect_func = getattr(sys.modules[__name__], effect)
 
     def perform(self, **kwargs):
-        import pdb; pdb.set_trace()  
+        import pdb
+
+        pdb.set_trace()
         return self.effect_func(self.player, self.opponent, **kwargs)
+
 
 # Just a mess of special abilities to load from one spot. For now they
 # get associated to their characters via the spell choices, which
 # opens the potential for sharing (that or I am too lazy to just put
 # these into the character modules nicely)
+
 
 def change_to_norm(nora, *_, **__):
     # Circular imports are an unfortunate thing...

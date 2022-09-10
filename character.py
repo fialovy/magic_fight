@@ -19,7 +19,9 @@ class Character:
         self._set_reactions()
         self._set_special_abilities()
 
-    def _set_attr_from_file(self, attr, filepath, strip=False, allow_empty=False, empty_val=None):
+    def _set_attr_from_file(
+        self, attr, filepath, strip=False, allow_empty=False, empty_val=None
+    ):
         """
         Read and set character data from a file, and set the character attribute
         to empty_val if file does not exist.
@@ -31,11 +33,11 @@ class Character:
         """
         if os.path.exists(filepath):
             with open(filepath, "r") as attr_fl:
-                if filepath.endswith('txt'):
+                if filepath.endswith("txt"):
                     val = attr_fl.read()
                     if strip:
                         val = val.strip()
-                elif filepath.endswith('json'):
+                elif filepath.endswith("json"):
                     val = json.load(attr_fl)
                 else:
                     raise ValueError(f"Unsupported filetype at the moment: {filepath}")
@@ -43,7 +45,9 @@ class Character:
         elif allow_empty:
             setattr(self, attr, empty_val)
         else:
-            raise FileNotFoundError(f"Could not set {attr}! Expected file not found: {filepath}")
+            raise FileNotFoundError(
+                f"Could not set {attr}! Expected file not found: {filepath}"
+            )
 
     def _set_bio(self):
         self._set_attr_from_file(
@@ -58,7 +62,7 @@ class Character:
             filepath=f"{self.namepath}/ascii_art.txt",
             strip=True,
             allow_empty=True,
-            empty_val=""
+            empty_val="",
         )
 
     def _set_magic_info(self):
@@ -78,7 +82,7 @@ class Character:
             attr="reactions",
             filepath=f"{self.namepath}/reactions.json",
             allow_empty=True,
-            empty_val=None
+            empty_val=None,
         )
 
     def _set_special_abilities(self, special_path=None):
@@ -86,7 +90,7 @@ class Character:
             attr="special_abilities_info",
             filepath=f"{self.namepath}/special.json",
             allow_empty=True,
-            empty_val={}
+            empty_val={},
         )
 
     def print_life(self):
@@ -127,8 +131,6 @@ class Character:
                 return
 
             ability = SpecialAbility(
-                player=self,
-                opponent=opponent,
-                effect=random.choice(abilities)
+                player=self, opponent=opponent, effect=random.choice(abilities)
             )
             return ability.perform()

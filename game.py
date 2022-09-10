@@ -142,16 +142,13 @@ class Game:
                 deny_func=self.player_turn,
             )
             ability = SpecialAbility(
-                player=self.player,
-                opponent=self.opponent,
-                effect=choice.effect
+                player=self.player, opponent=self.opponent, effect=choice.effect
             )
             # todo: return and reset potentially modified versions of
-            # both player and opponent? 
+            # both player and opponent?
             special_result = ability.perform()
             if isinstance(special_result, Character):
                 self.player = special_result
-
 
     def opponent_turn(self):
         self.opponent.possibly_taunt()
@@ -159,7 +156,7 @@ class Game:
         special_result = self.opponent.possibly_activate_special_ability(
             chance=OPPONENT_SPECIAL_ABILITY_CHANCE,
             # the opponent of the opponent is of course the player
-            opponent=self.player
+            opponent=self.player,
         )
         if isinstance(special_result, Character):
             self.opponent = special_result

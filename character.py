@@ -89,6 +89,9 @@ class Character:
             empty_val={}
         )
 
+    def print_life(self):
+        print(f'{self.name}: {"+"*self.life}({self.life} sparks left)')
+
     def possibly_taunt(self):
         """Depending on their percent chance of doing so (some characters
         are nicer), pick and say a random taunt.
@@ -107,7 +110,7 @@ class Character:
             )
             time.sleep(1)
 
-    def possibly_activate_special_ability(self, chance):
+    def possibly_activate_special_ability(self, chance, opponent):
         """Depending on percent chance, possibly auto-activiate a special ability.
 
         Definitely meant for computer opponents at the moment.
@@ -115,16 +118,17 @@ class Character:
         Chance is hard-coded for this now because I am sad.
         """
         if did_it_happen(chance):
-            import special_abilities
+            from special_abilities import SpecialAbility
 
             abilities = [
-                ability["effect"] for ability in self.special_abilities_info.values()
+                info["effect"] for info in self.special_abilities_info.values()
             ]
-
             if not abilities:
                 return
 
-            ability = random.choice(abilities)
-            ability_func = getattr(special_abilities, ability)
-
-            return ability_func(self)
+            ability = SpecialAbility(
+                player=self,
+                opponent=opponent,
+                effect=random.choice(abilities)
+            )
+            return ability.perform()

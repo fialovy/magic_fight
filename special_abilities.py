@@ -1,9 +1,7 @@
-"""
-Special abilities to load from one spot.
-"""
 import copy
 import json
 import random
+import sys
 import time
 import upsidedown
 
@@ -11,7 +9,24 @@ from character import Character
 from game_macros import did_it_happen
 
 
-def change_to_norm(nora):
+
+class SpecialAbility:
+    # TODO: fix this class; it seems contrived
+    def __init__(self, player, opponent, effect):
+        self.player = player
+        self.opponent = opponent
+        self.effect_func = getattr(sys.modules[__name__], effect)
+
+    def perform(self, **kwargs):
+        import pdb; pdb.set_trace()  
+        return self.effect_func(self.player, self.opponent, **kwargs)
+
+# Just a mess of special abilities to load from one spot. For now they
+# get associated to their characters via the spell choices, which
+# opens the potential for sharing (that or I am too lazy to just put
+# these into the character modules nicely)
+
+def change_to_norm(nora, *_, **__):
     # Circular imports are an unfortunate thing...
     from game import CHARACTERS_DIR
 
@@ -21,20 +36,20 @@ def change_to_norm(nora):
     norm = Character(name="Norm", special_namepath=norm_namepath)
     norm.life = nora.life
 
-    print("Nora becomes Norm!")
+    print(f"{nora.name} becomes Norm!")
     time.sleep(1)
 
     return norm
 
 
-def change_to_nora(norm):
+def change_to_nora(norm, *_, **__):
     norm.life -= 1
 
     # Re-instantiate because why not. Only life changes.
     nora = Character(name="Nora")
     nora.life = norm.life
 
-    print("Norm becomes Nora!")
+    print(f"{norm.name} becomes Nora!")
     time.sleep(1)
 
     return nora
@@ -65,7 +80,6 @@ def _print_potion_effect(character_name, effect):
     condrunktion = "and" if positive_effect else "but"
     action = "gives" if positive_effect else "costs"
 
-    # TODO: make comments to choose from for this, too.
     commentary = (
         "That's some good stuff" if positive_effect else f"Poor {character_name}."
     )
@@ -76,12 +90,12 @@ def _print_potion_effect(character_name, effect):
     time.sleep(1)
 
 
-def potionify(drinker):
+def potionify(player, *_, **__):
     effect = _potion_life_effect()
-    drinker.life += effect
+    player.life += effect
 
-    drunkard = Character(name=drinker.name)
-    drunkard.life = drinker.life
+    drunkard = Character(name=player.name)
+    drunkard.life = player.life
     drunkard.magic_info = _drunkify_spells(drunkard.magic_info)
     drunkard._set_special_abilities(f"{drunkard.namepath}/drunk_special.json")
     _print_potion_effect(drunkard.name, effect)
@@ -89,22 +103,36 @@ def potionify(drinker):
     return drunkard
 
 
-def attempt_sobering(drinker):
+def attempt_sobering(player, *_, is_computer=False):
     """was it a good idea?"""
     if did_it_happen():
         # Restore defaults!
-        sober = Character(name=drinker.name)
-        sober.life = drinker.life + 1
-        print("\nIt worked! You have magically sobered up and gained 1 life point!")
+        sober = Character(name=player.name)
+        sober.life = player.life + 1
+
+        if not is_computer:
+            print("\nIt worked! You have magically sobered up and gained 1 life point!")
+        else:
+            print(f"\n{player.name} has sobered up and gained 1 life point!")
         time.sleep(1)
 
         return sober
+    else:
+        player.life -= 1
+        if not is_computer:
+            print(
+                f"\nThere is no shortcut to sobriety, {player.name}. But this crappy "
+                f"concoction did manage to take a life point from you."
+            )
+        else:
+            print(
+                f"\n{player.name} is learning the hard way that there is no "
+                f"shortcut to sobriety. They lose 1 life point!"
+            )
+        time.sleep(1)
+        return player
 
-    drinker.life -= 1
-    print(
-        f"\nThere is no shortcut to sobriety, {drinker.name}. But this crappy "
-        f"concoction did manage to take a life point from you."
-    )
-    time.sleep(1)
 
-    return drinker
+def orbs_of_disorderify(player, opponent, **__):
+    print("coming soon! winfield's orbs need some maintenance...")
+    return player

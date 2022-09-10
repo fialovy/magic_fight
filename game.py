@@ -3,11 +3,10 @@ import os
 import random
 import time
 
-import special_abilities
-
 from character import Character
 from game_macros import CHARACTERS_DIR, OPPONENT_SPECIAL_ABILITY_CHANCE
 from game_macros import SpellChoice, SpecialChoice
+from special_abilities import SpecialAbility
 
 
 class Game:
@@ -140,20 +139,29 @@ class Game:
             self.confirm_input_choice(
                 choice=spell,
                 prompt=description,
-                deny_func=self.player_turn,  # this seems wrong...
+                deny_func=self.player_turn,
             )
-            ability_func = getattr(special_abilities, choice.effect)
-            ability_result = ability_func(self.player)
-            if ability_result is not None:
-                self.player = ability_result
+            ability = SpecialAbility(
+                player=self.player,
+                opponent=self.opponent,
+                effect=choice.effect
+            )
+            # todo: return and reset potentially modified versions of
+            # both player and opponent? 
+            special_result = ability.perform()
+            if isinstance(special_result, Character):
+                self.player = special_result
+
 
     def opponent_turn(self):
         self.opponent.possibly_taunt()
 
         special_result = self.opponent.possibly_activate_special_ability(
-            OPPONENT_SPECIAL_ABILITY_CHANCE
+            chance=OPPONENT_SPECIAL_ABILITY_CHANCE,
+            # the opponent of the opponent is of course the player
+            opponent=self.player
         )
-        if special_result is not None:
+        if isinstance(special_result, Character):
             self.opponent = special_result
 
         spell_info = self.opponent.magic_info["deals"]
@@ -181,8 +189,8 @@ class Game:
 
         # well it is a start
         while True:
-            print(f'{self.player.name}: {"+"*self.player.life}')
-            print(f'{self.opponent.name}: {"+"*self.opponent.life}\n')
+            self.player.print_life()
+            self.opponent.print_life()
             time.sleep(1)
 
             self.player_turn()

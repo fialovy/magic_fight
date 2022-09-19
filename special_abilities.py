@@ -9,7 +9,7 @@ from character import Character
 from game_macros import did_it_happen, SpecialEffect
 
 
-class SpecialAbility:
+class DeprecatedSpecialAbility:
     def __init__(self, player, opponent, effect):
         self.player = player
         self.opponent = opponent
@@ -20,10 +20,31 @@ class SpecialAbility:
         return self.effect_func(self.player, self.opponent, **additional_options)
 
 
-# Just a mess of special abilities to load from one spot. For now they
-# get associated to their characters via the spell choices, which
-# opens the potential for sharing (that or I am too lazy to just put
-# these into the character modules nicely)
+class SpecialAbility:
+    def __init__(self, player, opponent):
+        self.player = player
+        self.opponent = opponent
+
+    def perform(self, **additional_options):
+        raise NotImplementedError
+
+
+class ChangeToNorm(SpecialAbility):
+    def perform(self, **_):
+        # TODO: is it even circular once moved
+        # Circular imports are an unfortunate thing...
+        from game import CHARACTERS_DIR
+
+        self.player.life -= 1
+
+        norm_namepath = f"{CHARACTERS_DIR}/nora/norm"
+        norm = Character(name="Norm", special_namepath=norm_namepath)
+        norm.life = self.player.life
+
+        print(f"{self.player.name} becomes Norm!")
+        time.sleep(1)
+
+        return norm, self.opponent
 
 
 def change_to_norm(player, opponent, **_):

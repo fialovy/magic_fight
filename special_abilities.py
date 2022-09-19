@@ -6,7 +6,7 @@ import time
 import upsidedown
 
 from character import Character
-from game_macros import did_it_happen, SpecialEffect
+from game_macros import did_it_happen
 
 
 class SpecialAbility:

@@ -154,7 +154,7 @@ class Game:
         # in mind when returning player, opponent result format
         modified_opponent_as_player, modified_player_as_opponent = self.opponent.possibly_activate_special_ability(
             chance=OPPONENT_SPECIAL_ABILITY_CHANCE,
-            opponent=self.player,
+            human_opponent=self.player,
         )
         self.opponent, self.player = modified_opponent_as_player, modified_player_as_opponent
 

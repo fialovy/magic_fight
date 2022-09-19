@@ -9,6 +9,7 @@ OPPONENT_SPECIAL_ABILITY_CHANCE = 0.2
 
 SpellChoice = namedtuple("SpellChoice", ["dimension", "hit"])
 SpecialChoice = namedtuple("SpecialChoice", ["description", "effect"])
+SpecialEffect = namedtuple("SpecialEffect", ["affected_player", "affected_opponent"])
 
 
 def did_it_happen(chance=0.5):

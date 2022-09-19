@@ -6,21 +6,18 @@ import time
 import upsidedown
 
 from character import Character
-from game_macros import did_it_happen
+from game_macros import did_it_happen, SpecialEffect
 
 
 class SpecialAbility:
-    # TODO: fix this class; it seems contrived
     def __init__(self, player, opponent, effect):
         self.player = player
         self.opponent = opponent
+        # gross
         self.effect_func = getattr(sys.modules[__name__], effect)
 
-    def perform(self, **kwargs):
-        import pdb
-
-        pdb.set_trace()
-        return self.effect_func(self.player, self.opponent, **kwargs)
+    def perform(self, **additional_options):
+        return self.effect_func(self.player, self.opponent, **additional_options)
 
 
 # Just a mess of special abilities to load from one spot. For now they
@@ -29,33 +26,33 @@ class SpecialAbility:
 # these into the character modules nicely)
 
 
-def change_to_norm(nora, *_, **__):
+def change_to_norm(player, opponent, **_):
     # Circular imports are an unfortunate thing...
     from game import CHARACTERS_DIR
 
-    nora.life -= 1
+    player.life -= 1
 
     norm_namepath = f"{CHARACTERS_DIR}/nora/norm"
     norm = Character(name="Norm", special_namepath=norm_namepath)
-    norm.life = nora.life
+    norm.life = player.life
 
-    print(f"{nora.name} becomes Norm!")
+    print(f"{player.name} becomes Norm!")
     time.sleep(1)
 
-    return norm
+    return norm, opponent
 
 
-def change_to_nora(norm, *_, **__):
-    norm.life -= 1
+def change_to_nora(player, opponent, **_):
+    player.life -= 1
 
     # Re-instantiate because why not. Only life changes.
     nora = Character(name="Nora")
-    nora.life = norm.life
+    nora.life = player.life
 
-    print(f"{norm.name} becomes Nora!")
+    print(f"{player.name} becomes Nora!")
     time.sleep(1)
 
-    return nora
+    return nora, opponent
 
 
 def _potion_life_effect():
@@ -93,7 +90,7 @@ def _print_potion_effect(character_name, effect):
     time.sleep(1)
 
 
-def potionify(player, *_, **__):
+def potionify(player, opponent, **_):
     effect = _potion_life_effect()
     player.life += effect
 
@@ -103,10 +100,10 @@ def potionify(player, *_, **__):
     drunkard._set_special_abilities(f"{drunkard.namepath}/drunk_special.json")
     _print_potion_effect(drunkard.name, effect)
 
-    return drunkard
+    return drunkard, opponent
 
 
-def attempt_sobering(player, *_, is_computer=False):
+def attempt_sobering(player, opponent, is_computer=False):
     """was it a good idea?"""
     if did_it_happen():
         # Restore defaults!
@@ -133,9 +130,9 @@ def attempt_sobering(player, *_, is_computer=False):
                 f"shortcut to sobriety. They lose 1 life point!"
             )
         time.sleep(1)
-        return player
+        return player, opponent
 
 
-def orbs_of_disorderify(player, opponent, **__):
+def orbs_of_disorderify(player, opponent, **_):
     print("coming soon! winfield's orbs need some maintenance...")
-    return player
+    return player, opponent

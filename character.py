@@ -117,20 +117,23 @@ class Character:
     def possibly_activate_special_ability(self, chance, opponent):
         """Depending on percent chance, possibly auto-activiate a special ability.
 
-        Definitely meant for computer opponents at the moment.
+        Definitely meant for the non-human contender the moment.
 
         Chance is hard-coded for this now because I am sad.
         """
-        if did_it_happen(chance):
-            from special_abilities import SpecialAbility
+        if not did_it_happen(chance):
+            return self, opponent
 
-            abilities = [
-                info["effect"] for info in self.special_abilities_info.values()
-            ]
-            if not abilities:
-                return
+        from special_abilities import SpecialAbility
 
-            ability = SpecialAbility(
-                player=self, opponent=opponent, effect=random.choice(abilities)
-            )
-            return ability.perform()
+        abilities = [
+            info["effect"] for info in self.special_abilities_info.values()
+        ]
+        if not abilities:
+            # why am i doing this. what is life?
+            return self, opponent
+
+        ability = SpecialAbility(
+            player=self, opponent=opponent, effect=random.choice(abilities)
+        )
+        return ability.perform()

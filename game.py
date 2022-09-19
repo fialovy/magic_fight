@@ -103,6 +103,7 @@ class Game:
             # might be better at fewer things.
             if not info["spells"]:
                 continue
+            # Rotate among the available spells for each dimension
             choice_key = f'{random.choice(info["spells"])} ({dimension})'
             choices[choice_key] = SpellChoice(dimension=dimension, hit=info["amount"])
 
@@ -144,22 +145,18 @@ class Game:
             ability = SpecialAbility(
                 player=self.player, opponent=self.opponent, effect=choice.effect
             )
-            # todo: return and reset potentially modified versions of
-            # both player and opponent?
-            special_result = ability.perform()
-            if isinstance(special_result, Character):
-                self.player = special_result
+            self.player, self.opponent = ability.perform()
 
     def opponent_turn(self):
         self.opponent.possibly_taunt()
 
-        special_result = self.opponent.possibly_activate_special_ability(
+        # the opponent of the opponent is of course the player, so keep that
+        # in mind when returning player, opponent result format
+        modified_opponent_as_player, modified_player_as_opponent = self.opponent.possibly_activate_special_ability(
             chance=OPPONENT_SPECIAL_ABILITY_CHANCE,
-            # the opponent of the opponent is of course the player
             opponent=self.player,
         )
-        if isinstance(special_result, Character):
-            self.opponent = special_result
+        self.opponent, self.player = modified_opponent_as_player, modified_player_as_opponent
 
         spell_info = self.opponent.magic_info["deals"]
         # Recall that not everyone can deal every kind, as a cost to being

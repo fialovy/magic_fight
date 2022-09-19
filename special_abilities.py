@@ -90,6 +90,7 @@ def potionify(player, opponent, **_):
 
     drunkard = Character(name=player.name)
     drunkard.life = player.life
+    # TODO: don't deepcopy
     drunkard.magic_info = _drunkify_spells(drunkard.magic_info)
     drunkard._set_special_abilities(f"{drunkard.namepath}/drunk_special.json")
     _print_potion_effect(drunkard.name, effect)

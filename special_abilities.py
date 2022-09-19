@@ -13,8 +13,7 @@ class SpecialAbility:
     def __init__(self, player, opponent, effect):
         self.player = player
         self.opponent = opponent
-        # gross
-        import pdb; pdb.set_trace()  
+        # literally just load them all from here for now
         self.effect_func = getattr(sys.modules[__name__], effect)
 
     def perform(self, **additional_options):
@@ -129,5 +128,13 @@ def attempt_sobering(player, opponent, is_computer=False):
 
 
 def orbs_of_disorderify(player, opponent, **_):
-    print("coming soon! winfield's orbs need some maintenance...")
+    """
+    Mix up the hit values of the opponent's spells.
+    """
+    deal_amounts = [dim['amount'] for dim in opponent.magic_info['deals'].values()]
+
+    for dimension_info in opponent.magic_info["deals"].values():
+        now_deals = deal_amounts.pop(random.randrange(len(deal_amounts)))
+        dimension_info["amount"] = now_deals
+
     return player, opponent

@@ -114,7 +114,7 @@ class Character:
             )
             time.sleep(1)
 
-    def possibly_activate_special_ability(self, chance, opponent):
+    def possibly_activate_special_ability(self, chance, human_opponent):
         """Depending on percent chance, possibly auto-activiate a special ability.
 
         Definitely meant for the non-human contender the moment.
@@ -122,7 +122,7 @@ class Character:
         Chance is hard-coded for this now because I am sad.
         """
         if not did_it_happen(chance):
-            return self, opponent
+            return self, human_opponent
 
         from special_abilities import SpecialAbility
 
@@ -131,9 +131,9 @@ class Character:
         ]
         if not abilities:
             # why am i doing this. what is life?
-            return self, opponent
+            return self, human_opponent
 
         ability = SpecialAbility(
-            player=self, opponent=opponent, effect=random.choice(abilities)
+            player=self, opponent=human_opponent, effect=random.choice(abilities)
         )
         return ability.perform()

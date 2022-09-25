@@ -111,7 +111,7 @@ def attempt_sobering(player, opponent, is_computer=False):
             print(f"\n{player.name} has sobered up and gained 1 life point!")
         time.sleep(1)
 
-        return sober
+        return sober, opponent
     else:
         player.life -= 1
         if not is_computer:

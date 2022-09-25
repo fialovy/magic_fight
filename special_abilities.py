@@ -92,7 +92,9 @@ def potionify(player, opponent, **_):
     drunkard.life = player.life
     # TODO: don't deepcopy
     drunkard.magic_info = _drunkify_spells(drunkard.magic_info)
-    drunkard._set_special_abilities(special_path=f"{drunkard.namepath}/drunk_special.json")
+    drunkard._set_special_abilities(
+        special_path=f"{drunkard.namepath}/drunk_special.json"
+    )
     _print_potion_effect(drunkard.name, effect)
 
     return drunkard, opponent
@@ -131,7 +133,7 @@ def orbs_of_disorderify(player, opponent, **_):
     """
     Mix up the hit values of the opponent's spells.
     """
-    deal_amounts = [dim['amount'] for dim in opponent.magic_info['deals'].values()]
+    deal_amounts = [dim["amount"] for dim in opponent.magic_info["deals"].values()]
 
     for dimension_info in opponent.magic_info["deals"].values():
         now_deals = deal_amounts.pop(random.randrange(len(deal_amounts)))

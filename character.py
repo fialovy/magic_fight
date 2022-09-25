@@ -126,9 +126,7 @@ class Character:
 
         from special_abilities import SpecialAbility
 
-        abilities = [
-            info["effect"] for info in self.special_abilities_info.values()
-        ]
+        abilities = [info["effect"] for info in self.special_abilities_info.values()]
         if not abilities:
             # why am i doing this. what is life?
             return self, human_opponent

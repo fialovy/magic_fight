@@ -88,7 +88,7 @@ class Character:
     def _set_special_abilities(self, special_path=None):
         self._set_attr_from_file(
             attr="special_abilities_info",
-            filepath=f"{self.namepath}/special.json",
+            filepath=special_path or f"{self.namepath}/special.json",
             allow_empty=True,
             empty_val={},
         )

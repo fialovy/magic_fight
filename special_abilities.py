@@ -92,7 +92,7 @@ def potionify(player, opponent, **_):
     drunkard.life = player.life
     # TODO: don't deepcopy
     drunkard.magic_info = _drunkify_spells(drunkard.magic_info)
-    drunkard._set_special_abilities(f"{drunkard.namepath}/drunk_special.json")
+    drunkard._set_special_abilities(special_path=f"{drunkard.namepath}/drunk_special.json")
     _print_potion_effect(drunkard.name, effect)
 
     return drunkard, opponent
@@ -110,7 +110,6 @@ def attempt_sobering(player, opponent, is_computer=False):
         else:
             print(f"\n{player.name} has sobered up and gained 1 life point!")
         time.sleep(1)
-
         return sober, opponent
     else:
         player.life -= 1

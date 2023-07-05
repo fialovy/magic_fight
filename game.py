@@ -11,7 +11,6 @@ from game_macros import SpellChoice, SpecialChoice
 
 
 class Game:
-
     opponents = {}
     player = None
 

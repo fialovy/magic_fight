@@ -50,13 +50,14 @@ class Game:
 
         return choices[choice]
 
-    def confirm_input_choice(self, choice, prompt, deny_func):
+    def confirm_input_choice(self, choice, prompt, deny_func, deny_func_kwargs=None):
         """Print prompt presumably associated with some choice
         (e.g., info about a chosen character), and ask for y/n confirmation.
 
         Call given deny_func to custom 'reset' if they do not confirm.
         """
         confirmed = False
+        deny_func_kwargs = deny_func_kwargs or {}
 
         while not confirmed:
             print(prompt)
@@ -72,14 +73,14 @@ class Game:
             if confirm == "y":
                 return choice
             elif confirm == "n":
-                return deny_func()
+                return deny_func(**deny_func_kwargs)
             else:
                 print('Please type "y" or "n"')
                 continue
 
-    def select_character(self):
+    def select_character(self, prompt="Press a key to choose a character: \n"):
         chosen = self.get_input_choice(
-            prompt="Press a key to choose a character:\n",
+            prompt=prompt,
             choices=self.opponents,
             capitalize_choice=True,
         )
@@ -87,6 +88,7 @@ class Game:
             choice=chosen,
             prompt=f"{self.opponents[chosen].ascii}\n\n{self.opponents[chosen].bio}\n",
             deny_func=self.select_character,
+            deny_func_kwargs={'prompt': prompt}
         )
 
         return chosen
@@ -167,13 +169,16 @@ class Game:
         self.hit(self.player, dimension, max_hit=spell_info[dimension]["amount"])
 
     def play(self):
-        chosen = self.select_character()
-        self.player = self.opponents[chosen]
+        player_choice = self.select_character()
+        self.player = self.opponents[player_choice]
         # You cannot be your own opponent (not even you, Adrian).
-        del self.opponents[chosen]
+        del self.opponents[player_choice]
 
-        self.opponent = random.choice(list(self.opponents.values()))
-        print(f"\n{self.opponent.name} wants to duel!\n")
+        opponent_choice = self.select_character(prompt="Press a key to choose your opponent: \n")
+        self.opponent = self.opponents[opponent_choice]
+        print(f"\n{self.opponent.name} is ready to duel!\n")
+        #self.opponent = random.choice(list(self.opponents.values()))
+        #print(f"\n{self.opponent.name} wants to duel!\n")
         time.sleep(1)
         print("Ready?\n")
         time.sleep(2)

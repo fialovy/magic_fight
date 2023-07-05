@@ -1,5 +1,8 @@
 """
 Special abilities to load from one spot.
+
+Apparently it's required that they all 1) take the character as an argument, and 2)
+return a character (usually the same one, unless we're dealing with shapeshifters..)
 """
 import copy
 import json

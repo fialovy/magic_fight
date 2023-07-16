@@ -61,6 +61,7 @@ class Game:
                 choice = None
 
         if choice == random_choice_index and offer_random_choice:
+            del input_choices[random_choice_index]
             return random.choice(list(input_choices.values()))
 
         return input_choices[choice]

@@ -3,7 +3,7 @@ import os
 import random
 import time
 
-from typing import Optional, TypedDict
+from typing import Any, Optional, TypedDict
 
 from game_macros import CHARACTERS_DIR, GAME_LIFE, did_it_happen
 
@@ -26,27 +26,27 @@ class Character:
     name: str
     namepath: str  # how to get to the files (because shapeshifters)
     bio: str  # a short description of the character
-    ascii: str  # ascii art because this game has ✨ advanced graphics ✨
-    magic_info: dict  # too nested; i aint typin this
-    taunts: Optional[CharacterTaunts]
-    reactions: Optional[CharacterReactions]
+    ascii_art: str  # this game has ✨ advanced graphics ✨
+    magic_info: dict  # too nested; i aint typin this garbage
+    taunts: Optional[CharacterTaunts]  # some characters are mean...
+    reactions: Optional[CharacterReactions]  #...and some are sensitive (or both)
     special_abilities_info: dict[str, CharacterSpecialAbilitiesInfo]
 
-    def __init__(self, name: str, special_namepath: Optional[str] = None):
+    def __init__(self, name: str, special_namepath: Optional[str] = None) -> None:
         self.life = GAME_LIFE
         self.name = name
         self.namepath = special_namepath or f"{CHARACTERS_DIR}/{name.lower()}"
 
         self._set_bio()
-        self._set_ascii()
+        self._set_ascii_art()
         self._set_magic_info()
         self._set_taunts()
         self._set_reactions()
         self._set_special_abilities()
 
     def _set_attr_from_file(
-        self, attr, filepath, strip=False, allow_empty=False, empty_val=None
-    ):
+        self, attr: str, filepath: str, strip: Optional[bool]=False, allow_empty: Optional[bool]=False, empty_val: Optional[Any] = None
+    ) -> None:
         """
         Read and set character data from a file, and set the character attribute
         to empty_val if file does not exist.
@@ -74,16 +74,16 @@ class Character:
                 f"Could not set {attr}! Expected file not found: {filepath}"
             )
 
-    def _set_bio(self):
+    def _set_bio(self) -> None:
         self._set_attr_from_file(
             attr="bio",
             filepath=f"{self.namepath}/bio.txt",
             strip=True,
         )
 
-    def _set_ascii(self):
+    def _set_ascii_art(self) -> None:
         self._set_attr_from_file(
-            attr="ascii",
+            attr="ascii_art",
             filepath=f"{self.namepath}/ascii_art.txt",
             strip=True,
             allow_empty=True,

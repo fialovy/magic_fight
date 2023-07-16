@@ -3,7 +3,7 @@ import os
 import random
 import time
 
-from typing import Any, Optional, TypedDict
+from typing import Any, Optional, TypedDict, Union
 
 from game_macros import CHARACTERS_DIR, GAME_LIFE, did_it_happen
 
@@ -15,7 +15,8 @@ CharacterTaunts = TypedDict("CharacterTaunts", {"chance": float, "taunts": list[
 CharacterReactions = TypedDict(
     "CharacterReactions", {"chance": float, "reactions": list[str]}
 )
-# 'effect' must be the name of a function that will be loaded when used
+# 'effect' must be the name of a function implemented in special_abilities.py
+# that will be loaded when used
 CharacterSpecialAbilitiesInfo = TypedDict(
     "CharacterSpecialAbilitiesInfo", {"description": str, "effect": str}
 )
@@ -28,8 +29,8 @@ class Character:
     bio: str  # a short description of the character
     ascii_art: str  # this game has ✨ advanced graphics ✨
     magic_info: dict  # too nested; i aint typin this garbage
-    taunts: Optional[CharacterTaunts]  # some characters are mean...
-    reactions: Optional[CharacterReactions]  #...and some are sensitive (or both)
+    taunts: Optional[CharacterTaunts]
+    reactions: Optional[CharacterReactions]
     special_abilities_info: dict[str, CharacterSpecialAbilitiesInfo]
 
     def __init__(self, name: str, special_namepath: Optional[str] = None) -> None:
@@ -45,7 +46,12 @@ class Character:
         self._set_special_abilities()
 
     def _set_attr_from_file(
-        self, attr: str, filepath: str, strip: Optional[bool]=False, allow_empty: Optional[bool]=False, empty_val: Optional[Any] = None
+        self,
+        attr: str,
+        filepath: str,
+        strip: Optional[bool] = False,
+        allow_empty: Optional[bool] = False,
+        empty_val: Optional[Any] = None,
     ) -> None:
         """
         Read and set character data from a file, and set the character attribute
@@ -90,19 +96,21 @@ class Character:
             empty_val="",
         )
 
-    def _set_magic_info(self):
+    def _set_magic_info(self) -> None:
         self._set_attr_from_file(
             attr="magic_info",
             filepath=f"{self.namepath}/magic.json",
         )
 
-    def _set_taunts(self):
+    def _set_taunts(self) -> None:
         self._set_attr_from_file(
             attr="taunts",
             filepath=f"{self.namepath}/taunts.json",
+            allow_empty=True,
+            empty_val=None,
         )
 
-    def _set_reactions(self):
+    def _set_reactions(self) -> None:
         self._set_attr_from_file(
             attr="reactions",
             filepath=f"{self.namepath}/reactions.json",
@@ -110,7 +118,7 @@ class Character:
             empty_val=None,
         )
 
-    def _set_special_abilities(self, special_path=None):
+    def _set_special_abilities(self, special_path: Optional[str] = None) -> None:
         self._set_attr_from_file(
             attr="special_abilities_info",
             filepath=f"{self.namepath}/special.json",
@@ -118,15 +126,15 @@ class Character:
             empty_val={},
         )
 
-    def possibly_taunt(self):
-        """Depending on their percent chance of doing so (some characters
-        are nicer), pick and say a random taunt.
+    def possibly_taunt(self) -> None:
+        """Depending on their percent chance of doing so and whether they actually have taunts,
+        (some characters are nicer), pick and say a random taunt.
         """
-        if did_it_happen(self.taunts["chance"]):
+        if self.taunts is not None and did_it_happen(self.taunts["chance"]):
             print(f'{self.name} says: {random.choice(self.taunts["taunts"])}\n')
             time.sleep(1)
 
-    def possibly_react(self):
+    def possibly_react(self) -> None:
         """If character can verbally react to a hit (some are more vocal),
         do so based on their chance.
         """
@@ -136,7 +144,9 @@ class Character:
             )
             time.sleep(1)
 
-    def possibly_activate_special_ability(self, chance):
+    def possibly_activate_special_ability(
+        self, chance: float
+    ) -> Union["Character", None]:
         """Depending on percent chance, possibly auto-activiate a special ability.
 
         Definitely meant for computer opponents at the moment.
@@ -151,9 +161,10 @@ class Character:
             ]
 
             if not abilities:
-                return
+                return None
 
             ability = random.choice(abilities)
             ability_func = getattr(special_abilities, ability)
 
             return ability_func(self)
+        return None  # it is for mypy, okay?

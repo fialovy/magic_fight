@@ -8,7 +8,7 @@ import copy
 import json
 import random
 import time
-import upsidedown
+import upsidedown  # type: ignore
 
 from character import Character
 from game_macros import did_it_happen

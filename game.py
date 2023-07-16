@@ -9,20 +9,21 @@ from character import Character
 from game_macros import CHARACTERS_DIR, OPPONENT_SPECIAL_ABILITY_CHANCE
 from game_macros import SpellChoice, SpecialChoice
 
+from typing import Any, Union
 
 class Game:
-    opponents = {}
-    player = None
+    opponents: dict[str, Character] = {}
+    player: Character
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.set_up_characters()
 
-    def set_up_characters(self):
+    def set_up_characters(self) -> None:
         for name in os.listdir(f"{CHARACTERS_DIR}"):
             character = Character(name=name.title())
             self.opponents[name] = character
 
-    def get_input_choice(self, prompt, choices, capitalize_choice=True):
+    def get_input_choice(self, prompt: str, choices: dict[Union[str, int], Any], capitalize_choice: bool=True):
         """Given a custom prompt and list of text choices, prompt user to
         make a choice, and insist that they do so correctly until a proper
         one can be returned.
@@ -35,9 +36,9 @@ class Game:
             for idx, item in choices.items():
                 print(f"{idx}: {item.title() if capitalize_choice else item}\n")
 
-            choice = input(">>> ")
+            choice_input = input(">>> ")
             try:
-                choice = int(choice.strip())
+                choice = int(choice_input.strip())
             except Exception:
                 print("Please choose a number in the given range.")
                 choice = None

@@ -9,10 +9,11 @@ from character import Character
 from game_macros import CHARACTERS_DIR, OPPONENT_SPECIAL_ABILITY_CHANCE
 from game_macros import SpellChoice, SpecialChoice
 
-from typing import Any, Union
+from typing import Any, Callable, Optional, Union
+
 
 class Game:
-    opponents: dict[str, Character] = {}
+    opponents: dict = {}
     player: Character
 
     def __init__(self) -> None:
@@ -23,7 +24,12 @@ class Game:
             character = Character(name=name.title())
             self.opponents[name] = character
 
-    def get_input_choice(self, prompt: str, choices: dict[Union[str, int], Any], capitalize_choice: bool=True):
+    def get_input_choice(
+        self,
+        prompt: str,
+        choices: dict[Union[str, int], Any],
+        capitalize_choice: bool = True,
+    ) -> Union[str, int]:
         """Given a custom prompt and list of text choices, prompt user to
         make a choice, and insist that they do so correctly until a proper
         one can be returned.
@@ -51,16 +57,22 @@ class Game:
 
         return choices[choice]
 
-    def confirm_input_choice(self, choice, prompt, deny_func, deny_func_kwargs=None):
+    def confirm_input_choice(
+        self,
+        choice: Union[str, int],
+        prompt: str,
+        deny_func: Callable,
+        deny_func_kwargs: Optional[dict[str, Any]] = None,
+    ) -> Union[str, int, Callable]:
         """Print prompt presumably associated with some choice
         (e.g., info about a chosen character), and ask for y/n confirmation.
 
         Call given deny_func to custom 'reset' if they do not confirm.
         """
-        confirmed = False
         deny_func_kwargs = deny_func_kwargs or {}
+        confirmed_choice = None
 
-        while not confirmed:
+        while confirmed_choice is None:
             print(prompt)
             print(f"Confirm choice? Type y or n.")
 
@@ -72,27 +84,29 @@ class Game:
                 continue
 
             if confirm == "y":
-                return choice
+                confirmed_choice = choice
             elif confirm == "n":
                 return deny_func(**deny_func_kwargs)
             else:
                 print('Please type "y" or "n"')
                 continue
 
-    def select_character(self, prompt="Press a key to choose a character: \n"):
-        chosen = self.get_input_choice(
+        return confirmed_choice
+
+    def select_character(self, prompt: str = "Press a key to choose a character: \n"):
+        chosen_input = self.get_input_choice(
             prompt=prompt,
             choices=self.opponents,
             capitalize_choice=True,
         )
-        chosen = self.confirm_input_choice(
-            choice=chosen,
-            prompt=f"{self.opponents[chosen].ascii}\n\n{self.opponents[chosen].bio}\n",
+        chosen_confirmed = self.confirm_input_choice(
+            choice=chosen_input,
+            prompt=f"{self.opponents[chosen_input].ascii}\n\n{self.opponents[chosen_input].bio}\n",
             deny_func=self.select_character,
-            deny_func_kwargs={'prompt': prompt}
+            deny_func_kwargs={"prompt": prompt},
         )
 
-        return chosen
+        return chosen_confirmed
 
     def _construct_player_spell_choices(self):
         """For better or ugly, conform to le input helper...
@@ -175,11 +189,13 @@ class Game:
         # You cannot be your own opponent (not even you, Adrian).
         del self.opponents[player_choice]
 
-        opponent_choice = self.select_character(prompt="Press a key to choose your opponent: \n")
+        opponent_choice = self.select_character(
+            prompt="Press a key to choose your opponent: \n"
+        )
         self.opponent = self.opponents[opponent_choice]
         print(f"\n{self.opponent.name} is ready to duel!\n")
-        #self.opponent = random.choice(list(self.opponents.values()))
-        #print(f"\n{self.opponent.name} wants to duel!\n")
+        # self.opponent = random.choice(list(self.opponents.values()))
+        # print(f"\n{self.opponent.name} wants to duel!\n")
         time.sleep(1)
         print("Ready?\n")
         time.sleep(2)

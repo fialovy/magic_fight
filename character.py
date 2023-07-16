@@ -3,11 +3,36 @@ import os
 import random
 import time
 
+from typing import Optional, TypedDict
+
 from game_macros import CHARACTERS_DIR, GAME_LIFE, did_it_happen
 
 
+# Some characters say taunts. If so, they have a likelihood of doing so each
+# round (between 0 and 1), plus a list of choice things to say when they do.
+CharacterTaunts = TypedDict("CharacterTaunts", {"chance": float, "taunts": list[str]})
+# Same idea as above, but when you hit them.
+CharacterReactions = TypedDict(
+    "CharacterReactions", {"chance": float, "reactions": list[str]}
+)
+# 'effect' must be the name of a function that will be loaded when used
+CharacterSpecialAbilitiesInfo = TypedDict(
+    "CharacterSpecialAbilitiesInfo", {"description": str, "effect": str}
+)
+
+
 class Character:
-    def __init__(self, name, special_namepath=None):
+    life: int  # amount of juice left
+    name: str
+    namepath: str  # how to get to the files (because shapeshifters)
+    bio: str  # a short description of the character
+    ascii: str  # ascii art because this game has ✨ advanced graphics ✨
+    magic_info: dict  # too nested; i aint typin this
+    taunts: Optional[CharacterTaunts]
+    reactions: Optional[CharacterReactions]
+    special_abilities_info: dict[str, CharacterSpecialAbilitiesInfo]
+
+    def __init__(self, name: str, special_namepath: Optional[str] = None):
         self.life = GAME_LIFE
         self.name = name
         self.namepath = special_namepath or f"{CHARACTERS_DIR}/{name.lower()}"

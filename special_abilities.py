@@ -14,7 +14,7 @@ from character import Character
 from game_macros import did_it_happen
 
 
-def change_to_norm(nora):
+def change_to_norm(nora: Character) -> Character:
     # Circular imports are an unfortunate thing...
     from game import CHARACTERS_DIR
 
@@ -30,7 +30,7 @@ def change_to_norm(nora):
     return norm
 
 
-def change_to_nora(norm):
+def change_to_nora(norm: Character) -> Character:
     norm.life -= 1
 
     # Re-instantiate because why not. Only life changes.
@@ -43,7 +43,7 @@ def change_to_nora(norm):
     return nora
 
 
-def _potion_life_effect():
+def _potion_life_effect() -> int:
     """Return a positive or negative integer value to add to poor,
     drunken character's current life value.
     """
@@ -51,7 +51,7 @@ def _potion_life_effect():
     return sign * random.choice(range(1, 6))
 
 
-def _drunkify_spells(magic_info):
+def _drunkify_spells(magic_info: dict) -> dict:
     """Flip the given spell descriptions upside down, because we are drunk."""
     drunken_magic = copy.deepcopy(magic_info)
 
@@ -63,7 +63,7 @@ def _drunkify_spells(magic_info):
     return drunken_magic
 
 
-def _print_potion_effect(character_name, effect):
+def _print_potion_effect(character_name: str, effect: int) -> None:
     positive_effect = effect > 0
     condrunktion = "and" if positive_effect else "but"
     action = "gives" if positive_effect else "costs"
@@ -79,7 +79,7 @@ def _print_potion_effect(character_name, effect):
     time.sleep(1)
 
 
-def potionify(drinker):
+def potionify(drinker: Character) -> Character:
     effect = _potion_life_effect()
     drinker.life += effect
 
@@ -92,7 +92,7 @@ def potionify(drinker):
     return drunkard
 
 
-def attempt_sobering(drinker):
+def attempt_sobering(drinker: Character) -> Character:
     """was it a good idea?"""
     if did_it_happen():
         # Restore defaults!

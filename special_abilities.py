@@ -3,24 +3,30 @@ import json
 import random
 import sys
 import time
-import upsidedown
+import upsidedown  # type: ignore
+
+from typing import Any, Optional
 
 from character import Character
 from game_macros import did_it_happen
 
 
 class SpecialAbility:
-    def __init__(self, player, opponent, effect):
+    def __init__(self, player: Character, opponent: Character, effect: str) -> None:
         self.player = player
         self.opponent = opponent
         # literally just load them all from here for now
         self.effect_func = getattr(sys.modules[__name__], effect)
 
-    def perform(self, **additional_options):
+    def perform(
+        self, **additional_options: Optional[Any]
+    ) -> tuple[Character, Character]:
         return self.effect_func(self.player, self.opponent, **additional_options)
 
 
-def change_to_norm(player, opponent, **_):
+def change_to_norm(
+    player: Character, opponent: Character, **_
+) -> tuple[Character, Character]:
     # Circular imports are an unfortunate thing...
     from game import CHARACTERS_DIR
 
@@ -36,7 +42,9 @@ def change_to_norm(player, opponent, **_):
     return norm, opponent
 
 
-def change_to_nora(player, opponent, **_):
+def change_to_nora(
+    player: Character, opponent: Character, **_
+) -> tuple[Character, Character]:
     player.life -= 1
 
     # Re-instantiate because why not. Only life changes.
@@ -49,7 +57,7 @@ def change_to_nora(player, opponent, **_):
     return nora, opponent
 
 
-def _potion_life_effect():
+def _potion_life_effect() -> int:
     """Return a positive or negative integer value to add to poor,
     drunken character's current life value.
     """
@@ -57,7 +65,7 @@ def _potion_life_effect():
     return sign * random.choice(range(1, 6))
 
 
-def _drunkify_spells(magic_info):
+def _drunkify_spells(magic_info: dict) -> dict:
     """Flip the given spell descriptions upside down, because we are drunk."""
     drunken_magic = copy.deepcopy(magic_info)
 
@@ -69,7 +77,7 @@ def _drunkify_spells(magic_info):
     return drunken_magic
 
 
-def _print_potion_effect(character_name, effect):
+def _print_potion_effect(character_name: str, effect: int) -> None:
     positive_effect = effect > 0
     condrunktion = "and" if positive_effect else "but"
     action = "gives" if positive_effect else "costs"
@@ -84,7 +92,9 @@ def _print_potion_effect(character_name, effect):
     time.sleep(1)
 
 
-def potionify(player, opponent, **_):
+def potionify(
+    player: Character, opponent: Character, **_
+) -> tuple[Character, Character]:
     effect = _potion_life_effect()
     player.life += effect
 
@@ -100,7 +110,9 @@ def potionify(player, opponent, **_):
     return drunkard, opponent
 
 
-def attempt_sobering(player, opponent, is_computer=False):
+def attempt_sobering(
+    player: Character, opponent: Character, is_computer: bool = False
+) -> tuple[Character, Character]:
     """was it a good idea?"""
     if did_it_happen():
         # Restore defaults!
@@ -129,7 +141,9 @@ def attempt_sobering(player, opponent, is_computer=False):
         return player, opponent
 
 
-def orbs_of_disorderify(player, opponent, **_):
+def orbs_of_disorderify(
+    player: Character, opponent: Character, **_
+) -> tuple[Character, Character]:
     """
     Mix up the hit values of the opponent's spells.
     """

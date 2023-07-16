@@ -9,12 +9,13 @@ from character import Character
 from game_macros import CHARACTERS_DIR, OPPONENT_SPECIAL_ABILITY_CHANCE
 from game_macros import SpellChoice, SpecialChoice
 
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, Optional
 
 
 class Game:
-    opponents: dict = {}
+    all_characters: dict[str, Character] = {}
     player: Character
+    opponent: Character
 
     def __init__(self) -> None:
         self.set_up_characters()
@@ -22,24 +23,28 @@ class Game:
     def set_up_characters(self) -> None:
         for name in os.listdir(f"{CHARACTERS_DIR}"):
             character = Character(name=name.title())
-            self.opponents[name] = character
+            self.all_characters[name] = character
 
     def get_input_choice(
         self,
         prompt: str,
-        choices: dict[Union[str, int], Any],
+        choices: dict[str, Any],
         capitalize_choice: bool = True,
-    ) -> Union[str, int]:
+        offer_random_choice: bool = False,
+    ) -> str:
         """Given a custom prompt and list of text choices, prompt user to
         make a choice, and insist that they do so correctly until a proper
         one can be returned.
         """
-        choices = dict(enumerate(choices))
-        choice = None
+        input_choices = dict(enumerate(choices))
+        random_choice_index = len(choices)
+        if offer_random_choice:
+            input_choices[random_choice_index] = "Choose for me! 🔮"
 
+        choice = None
         while choice is None:
             print(prompt)
-            for idx, item in choices.items():
+            for idx, item in input_choices.items():
                 print(f"{idx}: {item.title() if capitalize_choice else item}\n")
 
             choice_input = input(">>> ")
@@ -51,19 +56,22 @@ class Game:
                 continue
 
             # ...but the enum made this 'interface' easy to validate.
-            if choice not in choices:
+            if choice not in input_choices:
                 print("Please choose a number in the given range.")
                 choice = None
 
-        return choices[choice]
+        if choice == random_choice_index and offer_random_choice:
+            return random.choice(list(input_choices.values()))
+
+        return input_choices[choice]
 
     def confirm_input_choice(
         self,
-        choice: Union[str, int],
+        choice: str | int,
         prompt: str,
         deny_func: Callable,
         deny_func_kwargs: Optional[dict[str, Any]] = None,
-    ) -> Union[str, int, Callable]:
+    ) -> str:
         """Print prompt presumably associated with some choice
         (e.g., info about a chosen character), and ask for y/n confirmation.
 
@@ -93,27 +101,31 @@ class Game:
 
         return confirmed_choice
 
-    def select_character(self, prompt: str = "Press a key to choose a character: \n"):
+    def select_character(
+        self, prompt: str = "Press a key to choose a character: \n"
+    ) -> str:
         chosen_input = self.get_input_choice(
             prompt=prompt,
-            choices=self.opponents,
+            choices=self.all_characters,
             capitalize_choice=True,
+            offer_random_choice=True,
         )
         chosen_confirmed = self.confirm_input_choice(
             choice=chosen_input,
-            prompt=f"{self.opponents[chosen_input].ascii}\n\n{self.opponents[chosen_input].bio}\n",
+            prompt=f"{self.all_characters[chosen_input].ascii}\n\n{self.all_characters[chosen_input].bio}\n",
             deny_func=self.select_character,
             deny_func_kwargs={"prompt": prompt},
         )
 
         return chosen_confirmed
 
-    def _construct_player_spell_choices(self):
-        """For better or ugly, conform to le input helper...
+    def _construct_player_spell_choices(self) -> dict[str, SpellChoice | SpecialChoice]:
+        """During a player's turn, construct a varying list of spell choices
+        based on what is available in the character JSON.
 
         Return dict that is still useful to us in terms of hits.
         """
-        choices = {}
+        choices: dict[str, SpellChoice | SpecialChoice] = {}
 
         for dimension, info in self.player.magic_info["deals"].items():
             # Not everyone can do every kind of magic, which means they
@@ -130,7 +142,7 @@ class Game:
 
         return choices
 
-    def hit(self, whom, dimension, max_hit):
+    def hit(self, whom: Character, dimension: str, max_hit: int) -> None:
         """Hit character (player or opponent) with up to the amount of given
         dimension's magic they take.
         """
@@ -139,7 +151,7 @@ class Game:
         print(f"{whom.name} takes {hit} {dimension} damage!\n")
         time.sleep(1)
 
-    def player_turn(self):
+    def player_turn(self) -> None:
         spell_infos = self._construct_player_spell_choices()
         spell = self.get_input_choice(
             prompt="Choose your spell:\n", choices=spell_infos, capitalize_choice=False
@@ -163,7 +175,7 @@ class Game:
             if ability_result is not None:
                 self.player = ability_result
 
-    def opponent_turn(self):
+    def opponent_turn(self) -> None:
         self.opponent.possibly_taunt()
 
         special_result = self.opponent.possibly_activate_special_ability(
@@ -183,19 +195,18 @@ class Game:
         time.sleep(1)
         self.hit(self.player, dimension, max_hit=spell_info[dimension]["amount"])
 
-    def play(self):
+    def play(self) -> None:
         player_choice = self.select_character()
-        self.player = self.opponents[player_choice]
+        self.player = self.all_characters[player_choice]
         # You cannot be your own opponent (not even you, Adrian).
-        del self.opponents[player_choice]
+        del self.all_characters[player_choice]
 
         opponent_choice = self.select_character(
             prompt="Press a key to choose your opponent: \n"
         )
-        self.opponent = self.opponents[opponent_choice]
+        self.opponent = self.all_characters[opponent_choice]
+
         print(f"\n{self.opponent.name} is ready to duel!\n")
-        # self.opponent = random.choice(list(self.opponents.values()))
-        # print(f"\n{self.opponent.name} wants to duel!\n")
         time.sleep(1)
         print("Ready?\n")
         time.sleep(2)

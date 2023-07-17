@@ -3,11 +3,10 @@ import os
 import random
 import time
 
-import special_abilities
-
 from character import Character
 from game_macros import CHARACTERS_DIR, OPPONENT_SPECIAL_ABILITY_CHANCE
 from game_macros import SpellChoice, SpecialChoice
+from special_abilities import SpecialAbility
 
 from typing import Any, Callable, Optional
 
@@ -133,6 +132,7 @@ class Game:
             # might be better at fewer things.
             if not info["spells"]:
                 continue
+            # Rotate among the available spells for each dimension
             choice_key = f'{random.choice(info["spells"])} ({dimension})'
             choices[choice_key] = SpellChoice(dimension=dimension, hit=info["amount"])
 
@@ -169,21 +169,29 @@ class Game:
             self.confirm_input_choice(
                 choice=spell,
                 prompt=description,
-                deny_func=self.player_turn,  # this seems wrong...
+                deny_func=self.player_turn,
             )
-            ability_func = getattr(special_abilities, choice.effect)
-            ability_result = ability_func(self.player)
-            if ability_result is not None:
-                self.player = ability_result
+            ability = SpecialAbility(
+                player=self.player, opponent=self.opponent, effect=choice.effect
+            )
+            self.player, self.opponent = ability.perform()
 
     def opponent_turn(self) -> None:
         self.opponent.possibly_taunt()
 
-        special_result = self.opponent.possibly_activate_special_ability(
-            OPPONENT_SPECIAL_ABILITY_CHANCE
+        # the opponent of the opponent is of course the player, so keep that
+        # in mind when returning player, opponent result format
+        (
+            modified_opponent_as_player,
+            modified_player_as_opponent,
+        ) = self.opponent.possibly_activate_special_ability(
+            chance=OPPONENT_SPECIAL_ABILITY_CHANCE,
+            human_opponent=self.player,
         )
-        if special_result is not None:
-            self.opponent = special_result
+        self.opponent, self.player = (
+            modified_opponent_as_player,
+            modified_player_as_opponent,
+        )
 
         spell_info = self.opponent.magic_info["deals"]
         # Recall that not everyone can deal every kind, as a cost to being
@@ -214,8 +222,8 @@ class Game:
 
         # well it is a start
         while True:
-            print(f'{self.player.name}: {"+"*self.player.life}')
-            print(f'{self.opponent.name}: {"+"*self.opponent.life}\n')
+            self.player.print_life()
+            self.opponent.print_life()
             time.sleep(1)
 
             self.player_turn()

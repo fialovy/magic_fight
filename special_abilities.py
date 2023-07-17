@@ -1,46 +1,60 @@
-"""
-Special abilities to load from one spot.
-
-Apparently it's required that they all 1) take the character as an argument, and 2)
-return a character (usually the same one, unless we're dealing with shapeshifters..)
-"""
 import copy
 import json
 import random
+import sys
 import time
 import upsidedown  # type: ignore
+
+from typing import Any, Optional
 
 from character import Character
 from game_macros import did_it_happen
 
 
-def change_to_norm(nora: Character) -> Character:
+class SpecialAbility:
+    def __init__(self, player: Character, opponent: Character, effect: str) -> None:
+        self.player = player
+        self.opponent = opponent
+        # literally just load them all from here for now
+        self.effect_func = getattr(sys.modules[__name__], effect)
+
+    def perform(
+        self, **additional_options: Optional[Any]
+    ) -> tuple[Character, Character]:
+        return self.effect_func(self.player, self.opponent, **additional_options)
+
+
+def change_to_norm(
+    player: Character, opponent: Character, **_
+) -> tuple[Character, Character]:
     # Circular imports are an unfortunate thing...
     from game import CHARACTERS_DIR
 
-    nora.life -= 1
+    player.life -= 1
 
     norm_namepath = f"{CHARACTERS_DIR}/nora/norm"
     norm = Character(name="Norm", special_namepath=norm_namepath)
-    norm.life = nora.life
+    norm.life = player.life
 
-    print("Nora becomes Norm!")
+    print(f"{player.name} becomes Norm!")
     time.sleep(1)
 
-    return norm
+    return norm, opponent
 
 
-def change_to_nora(norm: Character) -> Character:
-    norm.life -= 1
+def change_to_nora(
+    player: Character, opponent: Character, **_
+) -> tuple[Character, Character]:
+    player.life -= 1
 
     # Re-instantiate because why not. Only life changes.
     nora = Character(name="Nora")
-    nora.life = norm.life
+    nora.life = player.life
 
-    print("Norm becomes Nora!")
+    print(f"{player.name} becomes Nora!")
     time.sleep(1)
 
-    return nora
+    return nora, opponent
 
 
 def _potion_life_effect() -> int:
@@ -68,7 +82,6 @@ def _print_potion_effect(character_name: str, effect: int) -> None:
     condrunktion = "and" if positive_effect else "but"
     action = "gives" if positive_effect else "costs"
 
-    # TODO: make comments to choose from for this, too.
     commentary = (
         "That's some good stuff" if positive_effect else f"Poor {character_name}."
     )
@@ -79,35 +92,65 @@ def _print_potion_effect(character_name: str, effect: int) -> None:
     time.sleep(1)
 
 
-def potionify(drinker: Character) -> Character:
+def potionify(
+    player: Character, opponent: Character, **_
+) -> tuple[Character, Character]:
     effect = _potion_life_effect()
-    drinker.life += effect
+    player.life += effect
 
-    drunkard = Character(name=drinker.name)
-    drunkard.life = drinker.life
+    drunkard = Character(name=player.name)
+    drunkard.life = player.life
+    # TODO: don't deepcopy
     drunkard.magic_info = _drunkify_spells(drunkard.magic_info)
-    drunkard._set_special_abilities(f"{drunkard.namepath}/drunk_special.json")
+    drunkard._set_special_abilities(
+        special_path=f"{drunkard.namepath}/drunk_special.json"
+    )
     _print_potion_effect(drunkard.name, effect)
 
-    return drunkard
+    return drunkard, opponent
 
 
-def attempt_sobering(drinker: Character) -> Character:
+def attempt_sobering(
+    player: Character, opponent: Character, is_computer: bool = False
+) -> tuple[Character, Character]:
     """was it a good idea?"""
     if did_it_happen():
         # Restore defaults!
-        sober = Character(name=drinker.name)
-        sober.life = drinker.life + 1
-        print("\nIt worked! You have magically sobered up and gained 1 life point!")
+        sober = Character(name=player.name)
+        sober.life = player.life + 1
+
+        if not is_computer:
+            print("\nIt worked! You have magically sobered up and gained 1 life point!")
+        else:
+            print(f"\n{player.name} has sobered up and gained 1 life point!")
         time.sleep(1)
+        return sober, opponent
+    else:
+        player.life -= 1
+        if not is_computer:
+            print(
+                f"\nThere is no shortcut to sobriety, {player.name}. But this crappy "
+                f"concoction did manage to take a life point from you."
+            )
+        else:
+            print(
+                f"\n{player.name} is learning the hard way that there is no "
+                f"shortcut to sobriety. They lose 1 life point!"
+            )
+        time.sleep(1)
+        return player, opponent
 
-        return sober
 
-    drinker.life -= 1
-    print(
-        f"\nThere is no shortcut to sobriety, {drinker.name}. But this crappy "
-        f"concoction did manage to take a life point from you."
-    )
-    time.sleep(1)
+def orbs_of_disorderify(
+    player: Character, opponent: Character, **_
+) -> tuple[Character, Character]:
+    """
+    Mix up the hit values of the opponent's spells.
+    """
+    deal_amounts = [dim["amount"] for dim in opponent.magic_info["deals"].values()]
 
-    return drinker
+    for dimension_info in opponent.magic_info["deals"].values():
+        now_deals = deal_amounts.pop(random.randrange(len(deal_amounts)))
+        dimension_info["amount"] = now_deals
+
+    return player, opponent

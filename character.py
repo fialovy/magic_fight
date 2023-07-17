@@ -121,10 +121,13 @@ class Character:
     def _set_special_abilities(self, special_path: Optional[str] = None) -> None:
         self._set_attr_from_file(
             attr="special_abilities_info",
-            filepath=f"{self.namepath}/special.json",
+            filepath=special_path or f"{self.namepath}/special.json",
             allow_empty=True,
             empty_val={},
         )
+
+    def print_life(self) -> None:
+        print(f'{self.name}: {"+"*self.life}({self.life} sparks left)')
 
     def possibly_taunt(self) -> None:
         """Depending on their percent chance of doing so and whether they actually have taunts,
@@ -145,26 +148,25 @@ class Character:
             time.sleep(1)
 
     def possibly_activate_special_ability(
-        self, chance: float
-    ) -> Union["Character", None]:
+        self, chance: float, human_opponent: "Character"
+    ) -> tuple["Character", "Character"]:
         """Depending on percent chance, possibly auto-activiate a special ability.
 
-        Definitely meant for computer opponents at the moment.
+        Definitely meant for the non-human contender the moment.
 
         Chance is hard-coded for this now because I am sad.
         """
-        if did_it_happen(chance):
-            import special_abilities
+        if not did_it_happen(chance):
+            return self, human_opponent
 
-            abilities = [
-                ability["effect"] for ability in self.special_abilities_info.values()
-            ]
+        from special_abilities import SpecialAbility
 
-            if not abilities:
-                return None
+        abilities = [info["effect"] for info in self.special_abilities_info.values()]
+        if not abilities:
+            # why am i doing this. what is life?
+            return self, human_opponent
 
-            ability = random.choice(abilities)
-            ability_func = getattr(special_abilities, ability)
-
-            return ability_func(self)
-        return None  # it is for mypy, okay?
+        ability = SpecialAbility(
+            player=self, opponent=human_opponent, effect=random.choice(abilities)
+        )
+        return ability.perform()

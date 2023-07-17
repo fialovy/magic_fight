@@ -2,7 +2,7 @@ from character import GAME_LIFE
 from game import Game
 
 
-def main():
+def main() -> None:
     print(
         f"""Welcome to Magic Fight!
 

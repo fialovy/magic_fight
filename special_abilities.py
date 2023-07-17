@@ -3,11 +3,11 @@ import json
 import random
 import sys
 import time
-import upsidedown  # type: ignore
-
 from typing import Any, Optional
 
-from character import Character
+import upsidedown  # type: ignore
+
+from character import Character, CharacterMagicInfo
 from game_macros import did_it_happen
 
 
@@ -65,7 +65,7 @@ def _potion_life_effect() -> int:
     return sign * random.choice(range(1, 6))
 
 
-def _drunkify_spells(magic_info: dict) -> dict:
+def _drunkify_spells(magic_info: CharacterMagicInfo) -> CharacterMagicInfo:
     """Flip the given spell descriptions upside down, because we are drunk."""
     drunken_magic = copy.deepcopy(magic_info)
 

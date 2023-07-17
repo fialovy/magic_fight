@@ -1,14 +1,9 @@
 import random
+from typing import Final
 
-from collections import namedtuple
-
-
-CHARACTERS_DIR = "characters"
-GAME_LIFE = 20
-OPPONENT_SPECIAL_ABILITY_CHANCE = 0.2
-
-SpellChoice = namedtuple("SpellChoice", ["dimension", "hit"])
-SpecialChoice = namedtuple("SpecialChoice", ["description", "effect"])
+CHARACTERS_DIR: Final = "characters"
+GAME_LIFE: Final = 20
+OPPONENT_SPECIAL_ABILITY_CHANCE: Final = 0.2
 
 
 def did_it_happen(chance: float = 0.5) -> bool:

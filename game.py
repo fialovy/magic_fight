@@ -2,13 +2,11 @@ import json
 import os
 import random
 import time
-
-from character import Character
-from game_macros import CHARACTERS_DIR, OPPONENT_SPECIAL_ABILITY_CHANCE
-from game_macros import SpellChoice, SpecialChoice
-from special_abilities import SpecialAbility
-
 from typing import Any, Callable, Optional
+
+from character import Character, SpecialChoice, SpellChoice, SpellDimension
+from game_macros import CHARACTERS_DIR, OPPONENT_SPECIAL_ABILITY_CHANCE
+from special_abilities import SpecialAbility
 
 
 class Game:
@@ -127,23 +125,25 @@ class Game:
         """
         choices: dict[str, SpellChoice | SpecialChoice] = {}
 
-        for dimension, info in self.player.magic_info["deals"].items():
+        for dimension, dimension_info in self.player.magic_info["deals"].items():
             # Not everyone can do every kind of magic, which means they
             # might be better at fewer things.
-            if not info["spells"]:
+            if not dimension_info["spells"]:
                 continue
             # Rotate among the available spells for each dimension
-            choice_key = f'{random.choice(info["spells"])} ({dimension})'
-            choices[choice_key] = SpellChoice(dimension=dimension, hit=info["amount"])
+            choice_key = f'{random.choice(dimension_info["spells"])} ({dimension})'
+            choices[choice_key] = SpellChoice(
+                dimension=dimension, hit=dimension_info["amount"]
+            )
 
-        for ability_name, info in self.player.special_abilities_info.items():
+        for ability_name, ability_info in self.player.special_abilities_info.items():
             choices[ability_name] = SpecialChoice(
-                description=info["description"], effect=info["effect"]
+                description=ability_info["description"], effect=ability_info["effect"]
             )
 
         return choices
 
-    def hit(self, whom: Character, dimension: str, max_hit: int) -> None:
+    def hit(self, whom: Character, dimension: SpellDimension, max_hit: int) -> None:
         """Hit character (player or opponent) with up to the amount of given
         dimension's magic they take.
         """

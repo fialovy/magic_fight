@@ -5,7 +5,11 @@ import sys
 import time
 from typing import Any, Optional
 
-import upsidedown  # type: ignore
+SOMEONE_DIDNT_PIP_INSTALL = False
+try:
+    import upsidedown  # type: ignore
+except ImportError:
+    SOMEONE_DIDNT_PIP_INSTALL = True
 
 from character import Character, CharacterMagicInfo
 from game_macros import did_it_happen
@@ -70,9 +74,13 @@ def _drunkify_spells(magic_info: CharacterMagicInfo) -> CharacterMagicInfo:
     drunken_magic = copy.deepcopy(magic_info)
 
     for dimension_info in drunken_magic["deals"].values():
-        dimension_info["spells"] = list(
-            map(upsidedown.transform, dimension_info["spells"])
-        )
+        if not SOMEONE_DIDNT_PIP_INSTALL:
+            drunkified_spells = map(upsidedown.transform, dimension_info["spells"])
+        else:
+            drunkified_spells = map(
+                lambda spell: "".join(reversed(spell)), dimension_info["spells"]
+            )
+        dimension_info["spells"] = list(drunkified_spells)
 
     return drunken_magic
 

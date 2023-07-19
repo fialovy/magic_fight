@@ -37,7 +37,7 @@ def change_to_norm(
     norm = Character(name="Norm", special_namepath=norm_namepath)
     norm.life = player.life
 
-    print(f"{player.name} becomes Norm!")
+    print(f"{player.name} becomes Norm!\n")
     time.sleep(1)
 
     return norm, opponent
@@ -52,7 +52,7 @@ def change_to_nora(
     nora = Character(name="Nora")
     nora.life = player.life
 
-    print(f"{player.name} becomes Nora!")
+    print(f"{player.name} becomes Nora!\n")
     time.sleep(1)
 
     return nora, opponent
@@ -91,8 +91,8 @@ def _print_potion_effect(character_name: str, effect: int) -> None:
         "That's some good stuff" if positive_effect else f"Poor {character_name}."
     )
     print(
-        f"\n{character_name} gets drunk, {condrunktion} this time it {action} "
-        f"{abs(effect)} life points! {commentary}."
+        f"{character_name} gets drunk, {condrunktion} this time it {action} "
+        f"{abs(effect)} life points! {commentary}.\n"
     )
     time.sleep(1)
 
@@ -125,22 +125,22 @@ def attempt_sobering(
         sober.life = player.life + 1
 
         if not is_computer:
-            print("\nIt worked! You have magically sobered up and gained 1 life point!")
+            print("It worked! You have magically sobered up and gained 1 life point!\n")
         else:
-            print(f"\n{player.name} has sobered up and gained 1 life point!")
+            print(f"{player.name} has sobered up and gained 1 life point!\n")
         time.sleep(1)
         return sober, opponent
     else:
         player.life -= 1
         if not is_computer:
             print(
-                f"\nThere is no shortcut to sobriety, {player.name}. But this crappy "
-                f"concoction did manage to take a life point from you."
+                f"There is no shortcut to sobriety, {player.name}. But this crappy "
+                f"concoction did manage to take a life point from you.\n"
             )
         else:
             print(
-                f"\n{player.name} is learning the hard way that there is no "
-                f"shortcut to sobriety. They lose 1 life point!"
+                f"{player.name} is learning the hard way that there is no "
+                f"shortcut to sobriety. They lose 1 life point!\n"
             )
         time.sleep(1)
         return player, opponent
@@ -160,7 +160,7 @@ def orbs_of_disorderify(
 
     if is_computer:
         print(
-            f"\n{player.name} has used the Orbs of Disorder to randomly "
+            f"{player.name} has used the Orbs of Disorder to randomly "
             f"swap the hit values of your spells! Be careful! ✨🔵 ✨🟡\n"
         )
 

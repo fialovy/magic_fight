@@ -12,7 +12,7 @@ from typing import Any, Callable, Final, Literal, Optional, TypedDict, Union
 
 CHARACTERS_DIR: Final = "characters"
 GAME_LIFE: Final = 20
-OPPONENT_SPECIAL_ABILITY_CHANCE: Final = 0.9
+OPPONENT_SPECIAL_ABILITY_CHANCE: Final = 0.2
 
 
 ## Types

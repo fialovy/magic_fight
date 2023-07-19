@@ -1,5 +1,5 @@
-from character import GAME_LIFE
 from game import Game
+from game_macros import GAME_LIFE
 
 
 def main() -> None:

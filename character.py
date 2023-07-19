@@ -2,37 +2,12 @@ import json
 import os
 import random
 import time
-from collections import namedtuple
-from typing import Any, Literal, Optional, TypedDict, Union
+from typing import Any, Optional, TypedDict
 
-from game_macros import CHARACTERS_DIR, GAME_LIFE, did_it_happen
-
-# Some characters say taunts. If so, they have a likelihood of doing so each
-# round (between 0 and 1), plus a list of choice things to say when they do.
-CharacterTaunts = TypedDict("CharacterTaunts", {"chance": float, "taunts": list[str]})
-# Same idea as above, but when you hit them.
-CharacterReactions = TypedDict(
-    "CharacterReactions", {"chance": float, "reactions": list[str]}
-)
-# 'effect' must be the name of a function implemented in special_abilities.py
-# that will be loaded when used
-CharacterSpecialAbilitiesInfo = TypedDict(
-    "CharacterSpecialAbilitiesInfo", {"description": str, "effect": str}
-)
-
-SpellDimension = Literal["dark", "light", "chaotic", "ordered", "hot", "cold"]
-DealsDamageInfo = TypedDict("DealsDamageInfo", {"amount": int, "spells": list[str]})
-TakesDamageInfo = TypedDict("TakesDamageInfo", {"amount": int})
-CharacterMagicInfo = TypedDict(
-    "CharacterMagicInfo",
-    {
-        "deals": dict[SpellDimension, DealsDamageInfo],
-        "takes": dict[SpellDimension, TakesDamageInfo],
-    },
-)
-SpellChoice = namedtuple("SpellChoice", ["dimension", "hit"])
-# TODO: merge with CharacterSpecialAbilitiesInfo if one can
-SpecialChoice = namedtuple("SpecialChoice", ["description", "effect"])
+from game_macros import (CHARACTERS_DIR, GAME_LIFE, CharacterMagicInfo,
+                         CharacterReactions, CharacterSpecialAbilitiesInfo,
+                         CharacterTaunts, SpecialChoice, SpellChoice,
+                         did_it_happen)
 
 
 class Character:
@@ -159,27 +134,3 @@ class Character:
                 f"{self.name} says: " f'{random.choice(self.reactions["reactions"])}\n'
             )
             time.sleep(1)
-
-    def possibly_activate_special_ability(
-        self, chance: float, human_opponent: "Character"
-    ) -> tuple["Character", "Character"]:
-        """Depending on percent chance, possibly auto-activiate a special ability.
-
-        Definitely meant for the non-human contender the moment.
-
-        Chance is hard-coded for this now because I am sad.
-        """
-        if not did_it_happen(chance):
-            return self, human_opponent
-
-        from special_abilities import SpecialAbility
-
-        abilities = [info["effect"] for info in self.special_abilities_info.values()]
-        if not abilities:
-            # why am i doing this. what is life?
-            return self, human_opponent
-
-        ability = SpecialAbility(
-            player=self, opponent=human_opponent, effect=random.choice(abilities)
-        )
-        return ability.perform()

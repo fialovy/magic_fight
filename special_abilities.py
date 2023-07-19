@@ -12,7 +12,7 @@ except ImportError:
     SOMEONE_DIDNT_PIP_INSTALL = True
 
 from character import Character, CharacterMagicInfo
-from game_macros import did_it_happen
+from game_macros import CHARACTERS_DIR, did_it_happen
 
 
 class SpecialAbility:
@@ -31,9 +31,6 @@ class SpecialAbility:
 def change_to_norm(
     player: Character, opponent: Character, **_
 ) -> tuple[Character, Character]:
-    # Circular imports are an unfortunate thing...
-    from game import CHARACTERS_DIR
-
     player.life -= 1
 
     norm_namepath = f"{CHARACTERS_DIR}/nora/norm"
@@ -94,7 +91,7 @@ def _print_potion_effect(character_name: str, effect: int) -> None:
         "That's some good stuff" if positive_effect else f"Poor {character_name}."
     )
     print(
-        f"{character_name} gets drunk, {condrunktion} this time it {action} "
+        f"\n{character_name} gets drunk, {condrunktion} this time it {action} "
         f"{abs(effect)} life points! {commentary}."
     )
     time.sleep(1)
@@ -119,7 +116,7 @@ def potionify(
 
 
 def attempt_sobering(
-    player: Character, opponent: Character, is_computer: bool = False
+    player: Character, opponent: Character, is_computer: bool = False, **_
 ) -> tuple[Character, Character]:
     """was it a good idea?"""
     if did_it_happen():
@@ -150,7 +147,7 @@ def attempt_sobering(
 
 
 def orbs_of_disorderify(
-    player: Character, opponent: Character, **_
+    player: Character, opponent: Character, is_computer: bool = False, **_
 ) -> tuple[Character, Character]:
     """
     Mix up the hit values of the opponent's spells.
@@ -160,5 +157,11 @@ def orbs_of_disorderify(
     for dimension_info in opponent.magic_info["deals"].values():
         now_deals = deal_amounts.pop(random.randrange(len(deal_amounts)))
         dimension_info["amount"] = now_deals
+
+    if is_computer:
+        print(
+            f"\n{player.name} has used the Orbs of Disorder to randomly "
+            f"swap the hit values of your spells! Be careful! ✨🔵 ✨🟡\n"
+        )
 
     return player, opponent

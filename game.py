@@ -25,7 +25,7 @@ class Game:
             self.all_characters[name] = character
 
     def select_character(
-        self, prompt: str = "Press a key to choose a character: \n"
+        self, prompt: str = "Press a key to choose a character:\n"
     ) -> str:
         chosen_input = get_input_choice(
             prompt=prompt,
@@ -80,7 +80,9 @@ class Game:
     def player_turn(self) -> None:
         spell_infos = self._construct_player_spell_choices()
         spell = get_input_choice(
-            prompt="\nChoose your spell:\n", choices=spell_infos, capitalize_choice=False
+            prompt="\nChoose your spell:\n",
+            choices=spell_infos,
+            capitalize_choice=False,
         )
         choice = spell_infos[spell]
 
@@ -138,7 +140,7 @@ class Game:
             dimension = random.choice(able_dimensions)
             spell = random.choice(spell_info[dimension]["spells"])
 
-            print(f'\n{self.opponent.name} chooses: "{spell}"')
+            print(f'{self.opponent.name} chooses: "{spell}"\n')
             time.sleep(1)
             self.hit(self.player, dimension, max_hit=spell_info[dimension]["amount"])
 
@@ -149,7 +151,7 @@ class Game:
         del self.all_characters[player_choice]
 
         opponent_choice = self.select_character(
-            prompt="Press a key to choose your opponent: \n"
+            prompt="Press a key to choose your opponent:\n"
         )
         self.opponent = self.all_characters[opponent_choice]
 

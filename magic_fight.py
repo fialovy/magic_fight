@@ -18,7 +18,6 @@ def main() -> None:
 
         A character can likewise deal damage from one of the 6 kinds at a time.
         What kinds, and how much? You have to figure that out, too. Good luck!
-        \n
         """
     )
     game = Game()

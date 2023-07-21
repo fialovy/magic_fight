@@ -2,7 +2,7 @@ import json
 import os
 import random
 import time
-from typing import Optional
+from typing import Optional, Union
 
 from character import Character
 from game_macros import (CHARACTERS_DIR, OPPONENT_SPECIAL_ABILITY_CHANCE,
@@ -42,13 +42,15 @@ class Game:
 
         return chosen_confirmed
 
-    def _construct_player_spell_choices(self) -> dict[str, SpellChoice | SpecialChoice]:
+    def _construct_player_spell_choices(
+        self,
+    ) -> dict[str, Union[SpellChoice, SpecialChoice]]:
         """During a player's turn, construct a varying list of spell choices
         based on what is available in the character JSON.
 
         Return dict that is still useful to us in terms of hits.
         """
-        choices: dict[str, SpellChoice | SpecialChoice] = {}
+        choices: dict[str, Union[SpellChoice, SpecialChoice]] = {}
 
         for dimension, dimension_info in self.player.magic_info["deals"].items():
             # Not everyone can do every kind of magic, which means they

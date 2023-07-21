@@ -97,7 +97,7 @@ def get_input_choice(
 
 
 def confirm_input_choice(
-    choice: str | int,
+    choice: Union[str, int],
     prompt: str,
     deny_func: Callable,
     deny_func_kwargs: Optional[dict[str, Any]] = None,

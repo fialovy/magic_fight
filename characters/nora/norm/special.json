@@ -1,6 +1,10 @@
 {
-    "Become Nora!": {
-        "description": "At the cost of 1 life point, become Nora once more.",
+    "Shapeshift - Nora": {
+        "description": "At the cost of 1 life point, become Nora.",
         "effect": "change_to_nora"
+    },
+    "Shapeshift - Meadow Sprite 🌿": {
+        "description": "At the cost of 1 life point, transform into a meadow sprite.",
+        "effect": "change_to_meadow_sprite"
     }
 }

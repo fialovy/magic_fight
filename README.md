@@ -1,6 +1,6 @@
 # magic_fight
 
-##### wat?
+### wat?
 
 Very simple text loop game. Cast a spell!
 
@@ -16,11 +16,11 @@ of mypy was far too strong.
 
 So, sorry. There's a requirements file of the perfectly primitive sort. 🤪
 
-##### Recommendation
+### Recommendation
 
 `alias myblackisort='black .; isort .; mypy .;'`
 
-##### How to Submit a Character
+### How to Submit a Character
 
 `C O M I N G   S O O N`
 

@@ -28,34 +28,48 @@ class SpecialAbility:
         return self.effect_func(self.player, self.opponent, **additional_options)
 
 
+def _shapeshift(
+    player: Character,
+    name: str,
+    special_namepath: Optional[str] = None,
+    article: Optional[str] = "",
+) -> Character:
+    player.life -= 1
+
+    shapeshifted = Character(name=name, special_namepath=special_namepath)
+    shapeshifted.life = player.life
+
+    print(f"{player.name} becomes{' ' if article else ''}{article} {name}!")
+    time.sleep(1)
+
+    return shapeshifted
+
+
 def change_to_norm(
     player: Character, opponent: Character, **_
 ) -> tuple[Character, Character]:
-    player.life -= 1
-
-    norm_namepath = f"{CHARACTERS_DIR}/nora/norm"
-    norm = Character(name="Norm", special_namepath=norm_namepath)
-    norm.life = player.life
-
-    print(f"{player.name} becomes Norm!\n")
-    time.sleep(1)
-
+    norm = _shapeshift(player, "Norm", special_namepath=f"{CHARACTERS_DIR}/nora/norm")
     return norm, opponent
 
 
 def change_to_nora(
     player: Character, opponent: Character, **_
 ) -> tuple[Character, Character]:
-    player.life -= 1
-
-    # Re-instantiate because why not. Only life changes.
-    nora = Character(name="Nora")
-    nora.life = player.life
-
-    print(f"{player.name} becomes Nora!\n")
-    time.sleep(1)
-
+    nora = _shapeshift(player, "Nora")
     return nora, opponent
+
+
+# TODO: if computer takes on this form, give it an easy out so it doesn't bore people
+def change_to_meadow_sprite(
+    player: Character, opponent: Character, **_
+) -> tuple[Character, Character]:
+    meadow_sprite = _shapeshift(
+        player,
+        "Meadow Sprite",
+        special_namepath=f"{CHARACTERS_DIR}/nora/meadow_sprite",
+        article="a",
+    )
+    return meadow_sprite, opponent
 
 
 def _potion_life_effect() -> int:

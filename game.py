@@ -95,15 +95,16 @@ class Game:
 
         elif isinstance(choice, SpecialChoice):
             description, effect = choice.description, choice.effect
-            confirm_input_choice(
+            special_confirmed = confirm_input_choice(
                 choice=spell,
                 prompt=description,
                 deny_func=self.player_turn,
             )
-            ability = SpecialAbility(
-                player=self.player, opponent=self.opponent, effect=choice.effect
-            )
-            self.player, self.opponent = ability.perform()
+            if special_confirmed in self.player.special_abilities_info:
+                ability = SpecialAbility(
+                    player=self.player, opponent=self.opponent, effect=choice.effect
+                )
+                self.player, self.opponent = ability.perform()
 
     def opponent_turn(self) -> None:
         self.opponent.possibly_taunt()

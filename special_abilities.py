@@ -22,9 +22,7 @@ class SpecialAbility:
         # literally just load them all from here for now
         self.effect_func = getattr(sys.modules[__name__], effect)
 
-    def perform(
-        self, **additional_options: Optional[Any]
-    ) -> tuple[Character, Character]:
+    def perform(self, **additional_options: Any) -> tuple[Character, Character]:
         return self.effect_func(self.player, self.opponent, **additional_options)
 
 
@@ -32,7 +30,7 @@ def _shapeshift(
     player: Character,
     name: str,
     special_namepath: Optional[str] = None,
-    article: Optional[str] = "",
+    article: str = "",
 ) -> Character:
     player.life -= 1
 

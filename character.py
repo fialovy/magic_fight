@@ -37,9 +37,9 @@ class Character:
         self,
         attr: str,
         filepath: str,
-        strip: Optional[bool] = False,
-        allow_empty: Optional[bool] = False,
-        empty_val: Optional[Any] = None,
+        strip: bool = False,
+        allow_empty: bool = False,
+        empty_val: Any = None,
     ) -> None:
         """
         Read and set character data from a file, and set the character attribute

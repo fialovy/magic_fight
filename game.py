@@ -2,7 +2,7 @@ import json
 import os
 import random
 import time
-from typing import Optional, Union
+from typing import Union
 
 from character import Character
 from game_macros import (CHARACTERS_DIR, OPPONENT_SPECIAL_ABILITY_CHANCE,

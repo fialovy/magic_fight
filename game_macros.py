@@ -11,7 +11,7 @@ from typing import Any, Callable, Final, Literal, Optional, TypedDict, Union
 ## Constants
 
 CHARACTERS_DIR: Final = "characters"
-GAME_LIFE: Final = 20
+GAME_LIFE: Final = 15
 OPPONENT_SPECIAL_ABILITY_CHANCE: Final = 0.2
 
 

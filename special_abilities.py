@@ -12,7 +12,8 @@ except ImportError:
     NO_UPSIDEDOWN = True
 
 from character import Character, CharacterMagicInfo
-from game_macros import CHARACTERS_DIR, did_it_happen
+from game_macros import (CHARACTERS_DIR, DEFAULT_SPECIAL_ABILITY_TURNS,
+                         did_it_happen)
 
 
 class SpecialAbility:
@@ -170,6 +171,7 @@ def orbs_of_disorderify(
         now_deals = deal_amounts.pop(random.randrange(len(deal_amounts)))
         dimension_info["amount"] = now_deals
 
+    opponent.affected_by_character_turns_left[player] = DEFAULT_SPECIAL_ABILITY_TURNS
     if is_computer:
         print(
             f"{player.name} has used the Orbs of Disorder to randomly "

@@ -13,6 +13,9 @@ from typing import Any, Callable, Final, Literal, Optional, TypedDict, Union
 CHARACTERS_DIR: Final = "characters"
 GAME_LIFE: Final = 15
 OPPONENT_SPECIAL_ABILITY_CHANCE: Final = 0.2
+DEFAULT_SPECIAL_ABILITY_TURNS = (
+    3  # number of turns a special ability lasts by default, if it affects any state
+)
 
 
 ## Types

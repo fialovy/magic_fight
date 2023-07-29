@@ -17,6 +17,7 @@ class Character:
     bio: str  # a short description of the character
     ascii_art: str  # this game has ✨ advanced graphics ✨
     magic_info: CharacterMagicInfo
+    affected_by_character_turns_left: dict["Character", int]
     taunts: Optional[CharacterTaunts]
     reactions: Optional[CharacterReactions]
     special_abilities_info: dict[str, CharacterSpecialAbilitiesInfo]
@@ -25,6 +26,8 @@ class Character:
         self.life = GAME_LIFE
         self.name = name
         self.namepath = special_namepath or f"{CHARACTERS_DIR}/{name.lower()}"
+        # some sort of countdown...eventually
+        self.affected_by_character_turns_left = {}
 
         self._set_bio()
         self._set_ascii_art()
@@ -134,3 +137,15 @@ class Character:
                 f"{self.name} says: " f'{random.choice(self.reactions["reactions"])}\n'
             )
             time.sleep(1)
+
+    def reset(self, opponent_name: str, is_computer: bool = False) -> None:
+        # for now broad blind reset; later more specific how (and if) based
+        # on character and status of same affected areas from other characters
+        self._set_magic_info()
+        self._set_taunts()
+        self._set_reactions()
+
+        affected_phrase = f"{self.name} has" if is_computer else "You have"
+        affector_phrase = f"{opponent_name}'s" if is_computer else "your"
+        print(f"{affected_phrase} recovered from {affector_phrase} magical effect!")
+        time.sleep(1)

@@ -79,6 +79,30 @@ class Game:
         print(f"{whom.name} takes {hit} {dimension} damage!\n")
         time.sleep(1)
 
+    def wear_down_existing_effects(
+        self, affected: Character, is_computer: bool = False
+    ) -> Character:
+        # if 0, do nothing
+        # if 1, reset magic infos (e.g., if affected by Orbs of Disorder, regular magic is restored
+        # if > 1, decrement
+        # except this is sad because when one opponent's effect wears off, everyone's does
+        for character, turns_left in affected.affected_by_character_turns_left.items():
+            if turns_left == 0:
+                continue
+
+            if turns_left == 1:
+                # reset = Character(
+                #    name=affected.name,  # namepath=affected.namepath does this work for the shapeshifter??
+                # )
+                # reset.life = affected.life
+                # affected = reset
+                affected.reset(opponent_name=character.name, is_computer=is_computer)
+                continue  # affected_by_character_turns_left has also just reset TODO: for THIS CHARACTER?
+
+            affected.affected_by_character_turns_left[character] -= 1
+
+        return affected  # TODO: does need anymore?
+
     def player_turn(self) -> None:
         spell_infos = self._construct_player_spell_choices()
         spell = get_input_choice(
@@ -105,6 +129,8 @@ class Game:
                     player=self.player, opponent=self.opponent, effect=choice.effect
                 )
                 self.player, self.opponent = ability.perform()
+
+        self.player = self.wear_down_existing_effects(self.player, is_computer=False)
 
     def opponent_turn(self) -> None:
         self.opponent.possibly_taunt()
@@ -147,6 +173,8 @@ class Game:
             time.sleep(1)
             self.hit(self.player, dimension, max_hit=spell_info[dimension]["amount"])
 
+        self.opponent = self.wear_down_existing_effects(self.opponent, is_computer=True)
+
     def play(self) -> None:
         player_choice = self.select_character()
         self.player = self.all_characters[player_choice]
@@ -168,7 +196,12 @@ class Game:
             self.player.print_life()
             self.opponent.print_life()
             time.sleep(1)
+            import pprint
 
+            pp = pprint.PrettyPrinter()
+            print("+++++++++++++++++ PLAYER STATUS:")
+            pp.pprint(self.player.magic_info)
+            print("++++++++++++++++++++++++++++++++++")
             self.player_turn()
             if self.opponent.life <= 0:
                 print(
@@ -177,6 +210,10 @@ class Game:
                 time.sleep(2)
                 return
 
+            # debug
+            print("+++++++++++++++++ OPPONENT STATUS:")
+            pp.pprint(self.opponent.magic_info)
+            print("++++++++++++++++++++++++++++++++++")
             self.opponent_turn()
             if self.player.life <= 0:
                 print(f"{self.opponent.name} has bested you. Game over.")

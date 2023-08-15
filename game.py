@@ -84,7 +84,7 @@ class Game:
     ) -> Character:
         # if 0, do nothing
         # if 1, reset magic infos (e.g., if affected by Orbs of Disorder, regular magic is restored
-        # if > 1, decrement
+        # if >= 1, decrement
         # right now this is kinda silly because there is one opponent at a time,
         # and when that one opponent's effect wears off, 'everyone's' does
         # but who knows...maybe there will be a future

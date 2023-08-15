@@ -81,7 +81,7 @@ def _potion_life_effect() -> int:
 
 def _drunkify_spells(magic_info: CharacterMagicInfo) -> CharacterMagicInfo:
     """Flip the given spell descriptions upside down, because we are drunk."""
-    drunken_magic = copy.deepcopy(magic_info)
+    drunken_magic = copy.deepcopy(magic_info)  # it's not THAT big
 
     for dimension_info in drunken_magic["deals"].values():
         if not NO_UPSIDEDOWN:
@@ -118,7 +118,6 @@ def potionify(
 
     drunkard = Character(name=player.name)
     drunkard.life = player.life
-    # TODO: don't deepcopy
     drunkard.magic_info = _drunkify_spells(drunkard.magic_info)
     drunkard._set_special_abilities(
         special_path=f"{drunkard.namepath}/drunk_special.json"

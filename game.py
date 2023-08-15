@@ -85,23 +85,19 @@ class Game:
         # if 0, do nothing
         # if 1, reset magic infos (e.g., if affected by Orbs of Disorder, regular magic is restored
         # if > 1, decrement
-        # except this is sad because when one opponent's effect wears off, everyone's does
+        # right now this is kinda silly because there is one opponent at a time,
+        # and when that one opponent's effect wears off, 'everyone's' does
+        # but who knows...maybe there will be a future
         for character, turns_left in affected.affected_by_character_turns_left.items():
             if turns_left == 0:
                 continue
 
             if turns_left == 1:
-                # reset = Character(
-                #    name=affected.name,  # namepath=affected.namepath does this work for the shapeshifter??
-                # )
-                # reset.life = affected.life
-                # affected = reset
                 affected.reset(opponent_name=character.name, is_computer=is_computer)
-                continue  # affected_by_character_turns_left has also just reset TODO: for THIS CHARACTER?
 
             affected.affected_by_character_turns_left[character] -= 1
 
-        return affected  # TODO: does need anymore?
+        return affected
 
     def player_turn(self) -> None:
         spell_infos = self._construct_player_spell_choices()

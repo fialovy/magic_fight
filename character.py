@@ -26,8 +26,9 @@ class Character:
         self.life = GAME_LIFE
         self.name = name
         self.namepath = special_namepath or f"{CHARACTERS_DIR}/{name.lower()}"
-        # some sort of countdown...eventually
-        self.affected_by_character_turns_left = {}
+        self.affected_by_character_turns_left = (
+            {}
+        )  # countdown of turns left by character causing effect
 
         self._set_bio()
         self._set_ascii_art()

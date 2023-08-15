@@ -192,12 +192,7 @@ class Game:
             self.player.print_life()
             self.opponent.print_life()
             time.sleep(1)
-            import pprint
 
-            pp = pprint.PrettyPrinter()
-            print("+++++++++++++++++ PLAYER STATUS:")
-            pp.pprint(self.player.magic_info)
-            print("++++++++++++++++++++++++++++++++++")
             self.player_turn()
             if self.opponent.life <= 0:
                 print(
@@ -206,10 +201,6 @@ class Game:
                 time.sleep(2)
                 return
 
-            # debug
-            print("+++++++++++++++++ OPPONENT STATUS:")
-            pp.pprint(self.opponent.magic_info)
-            print("++++++++++++++++++++++++++++++++++")
             self.opponent_turn()
             if self.player.life <= 0:
                 print(f"{self.opponent.name} has bested you. Game over.")

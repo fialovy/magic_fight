@@ -146,6 +146,6 @@ class Character:
         self._set_reactions()
 
         affected_phrase = f"{self.name} has" if is_computer else "You have"
-        affector_phrase = f"{opponent_name}'s" if is_computer else "your"
+        affector_phrase = "your" if is_computer else f"{opponent_name}'s"
         print(f"{affected_phrase} recovered from {affector_phrase} magical effect!")
         time.sleep(1)

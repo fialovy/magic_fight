@@ -22,10 +22,22 @@ So, sorry. There's a requirements file of the perfectly primitive sort. 🤪
 
 ### How to Submit a Character
 
-`C O M I N G   S O O N`
+To create a new character, you must create a new subdirectory within the `characters/`
+directory with the name of your choice. During gameplay, the character's name will
+be nicely title-cased and formatted. For example:
 
-You can probably figure out the directory structure for yourself (or ask ChatGPT to
-do it), but as a concrete lover of context ♾️😏♾️, I promise to actually add detailed
-steps at some point.
+`vasily` becomes `Vasily`
+
+`mary_anne` becomes `Mary Anne`
+
+Next, you must add the two required files within your new character directory:
+
+1. `bio.txt` - A short description of the character. I don't throw it to OpenAI or anything
+yet, so don't get too excited. It's just to show a nice prompt when you choose a character
+at the beginning.
+2. `magic.json` - A JSON file containing your character's spell information. It should
+be structured like:
+
+<TODO>
 
 ![Character doodles](images/neat.png)

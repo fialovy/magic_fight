@@ -12,7 +12,8 @@ except ImportError:
     NO_UPSIDEDOWN = True
 
 from character import Character, CharacterMagicInfo
-from game_macros import CHARACTERS_DIR, did_it_happen
+from game_macros import (CHARACTERS_DIR, DEFAULT_SPECIAL_ABILITY_TURNS,
+                         did_it_happen)
 
 
 class SpecialAbility:
@@ -80,7 +81,7 @@ def _potion_life_effect() -> int:
 
 def _drunkify_spells(magic_info: CharacterMagicInfo) -> CharacterMagicInfo:
     """Flip the given spell descriptions upside down, because we are drunk."""
-    drunken_magic = copy.deepcopy(magic_info)
+    drunken_magic = copy.deepcopy(magic_info)  # it's not THAT big
 
     for dimension_info in drunken_magic["deals"].values():
         if not NO_UPSIDEDOWN:
@@ -117,7 +118,6 @@ def potionify(
 
     drunkard = Character(name=player.name)
     drunkard.life = player.life
-    # TODO: don't deepcopy
     drunkard.magic_info = _drunkify_spells(drunkard.magic_info)
     drunkard._set_special_abilities(
         special_path=f"{drunkard.namepath}/drunk_special.json"
@@ -170,6 +170,7 @@ def orbs_of_disorderify(
         now_deals = deal_amounts.pop(random.randrange(len(deal_amounts)))
         dimension_info["amount"] = now_deals
 
+    opponent.affected_by_character_turns_left[player] = DEFAULT_SPECIAL_ABILITY_TURNS
     if is_computer:
         print(
             f"{player.name} has used the Orbs of Disorder to randomly "

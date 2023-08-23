@@ -79,6 +79,26 @@ class Game:
         print(f"{whom.name} takes {hit} {dimension} damage!\n")
         time.sleep(1)
 
+    def wear_down_existing_effects(
+        self, affected: Character, is_computer: bool = False
+    ) -> Character:
+        # if 0, do nothing
+        # if 1, reset magic infos (e.g., if affected by Orbs of Disorder, regular magic is restored
+        # if >= 1, decrement
+        # right now this is kinda silly because there is one opponent at a time,
+        # and when that one opponent's effect wears off, 'everyone's' does
+        # but who knows...maybe there will be a future
+        for character, turns_left in affected.affected_by_character_turns_left.items():
+            if turns_left == 0:
+                continue
+
+            if turns_left == 1:
+                affected.reset(opponent_name=character.name, is_computer=is_computer)
+
+            affected.affected_by_character_turns_left[character] -= 1
+
+        return affected
+
     def player_turn(self) -> None:
         spell_infos = self._construct_player_spell_choices()
         spell = get_input_choice(
@@ -105,6 +125,8 @@ class Game:
                     player=self.player, opponent=self.opponent, effect=choice.effect
                 )
                 self.player, self.opponent = ability.perform()
+
+        self.player = self.wear_down_existing_effects(self.player, is_computer=False)
 
     def opponent_turn(self) -> None:
         self.opponent.possibly_taunt()
@@ -146,6 +168,8 @@ class Game:
             print(f'{self.opponent.name} chooses: "{spell}"\n')
             time.sleep(1)
             self.hit(self.player, dimension, max_hit=spell_info[dimension]["amount"])
+
+        self.opponent = self.wear_down_existing_effects(self.opponent, is_computer=True)
 
     def play(self) -> None:
         player_choice = self.select_character()

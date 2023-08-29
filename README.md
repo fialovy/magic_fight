@@ -131,9 +131,9 @@ on their turn. It should be structured like:
 
 If `chance` is 0.95, for example, your character will say something aloud on their turn
 95% of the time, chosen randomly from the array of `taunts`. You can look to
-[Adrian](https://github.com/fialovy/magic_fight/blob/26-character-readme/characters/adrian/taunts.json)
+[Adrian](https://github.com/fialovy/magic_fight/blob/master/characters/adrian/taunts.json)
 or
-[Nora](https://github.com/fialovy/magic_fight/blob/26-character-readme/characters/nora/taunts.json)
+[Nora](https://github.com/fialovy/magic_fight/blob/master/characters/nora/taunts.json)
 for examples and make these as mean or as nice as you like.
 
 2. `reactions.json` - A JSON file containing things your character might say when the
@@ -145,7 +145,7 @@ opponent hits them. It should be structured like:
     "reactions": <array_of_strings>
 }
 ```
-You can again look to [Adrian's file](https://github.com/fialovy/magic_fight/blob/26-character-readme/characters/adrian/reactions.json) for examples of these.
+You can again look to [Adrian's file](https://github.com/fialovy/magic_fight/blob/master/characters/adrian/reactions.json) for examples of these.
 
 3. `ascii_art.txt` - A text file that ideally contains an ASCII art image depicting
 your character and/or the general spirit of them. You could also just throw down
@@ -173,7 +173,7 @@ It should be structured like:
 }
 ```
 You can implement as many special abilities as you like, as long as each one's
-`effect` is the exact match of a function name in [special_abilities.py](https://github.com/fialovy/magic_fight/blob/26-character-readme/special_abilities.py)
+`effect` is the exact match of a function name in [special_abilities.py](https://github.com/fialovy/magic_fight/blob/master/special_abilities.py)
 that follows the contract laid out in `SpecialAbility.perform` (take player character, opponent
 character, and whatever kwargs you want as arguments; return tuple of player character
 and opponent character with whatever changes applied. Eh; just look at the file for examples.)

@@ -107,15 +107,15 @@ turn. Likewise, the computer will randomly choose one spell from any one of the 
 when your character is the opponent.
 
 It is okay for your character to deal or take zero damage in a category, as long as
-everything still adds up to 10! In the former case, their list of spell choices should
+everything still adds up to 10. In the former case, the list of spell choices should
 be empty.
 
 
 #### Optional character files
 
-You can create a character directory containing only `bio.txt` and `magic.json` and
-the game should work, but it's more fun when you also add (in the same directory,
-at the same level of the bio and magic, of course):
+You can create a character directory containing only `bio.txt` and `magic.json`, and
+the game should work. But it's more fun when you also add (in the same directory,
+at the same, flat level of the bio and magic):
 
 1. `taunts.json` - A JSON file containing things your character might say to the opponent
 on their turn. It should be structured like:

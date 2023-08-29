@@ -165,7 +165,7 @@ It should be structured like:
     },
     <another_ability_name_to_be_displayed_as_spell_choice>: {
         "description": <string>,
-        "effect": <name_of_function_you_implement_in_special_abilities.py>
+        "effect": <name_of_another_function_you_implement_in_special_abilities.py>
     },
     ...
 }

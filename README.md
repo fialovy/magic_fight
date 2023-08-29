@@ -153,7 +153,7 @@ If provided, it will be displayed at the beginning of the game when you are choo
 a character to play and/or the opponent. Not required, just fun.
 
 4. `special.json` - A JSON file outlining your character's special abilities, which
-will be randomly chosen from and offered as an additional spell choice if present (and
+will be offered as additional spell choices if present (and
 properly implemented in the current dumping ground that is `special_abilities.py` 🤪).
 It should be structured like:
 

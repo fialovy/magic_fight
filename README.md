@@ -20,6 +20,8 @@ So, sorry. There's a requirements file of the perfectly primitive sort. 🤪
 
 `alias myblackisort='black .; isort .; mypy .;'`
 
+![Character doodles](images/neat.png)
+
 ### How to Submit a Character
 
 To create a new character, you must create a new subdirectory within the `characters/`
@@ -181,4 +183,13 @@ shapeshifting abilities that implement entirely new characters with their own di
 living within hers.
 
 
-![Character doodles](images/neat.png)
+### Why on earth did you read this far?!
+
+If you did, you may be entitled to a custom-made 🌿 ✨ MEADOW SPRITE FORM ✨ 🌿  refrigerator magnet
+featuring the shapeshifter character from this extremely popular hit game! 😱 🧚 😱 🧚 😱
+
+Just pay me as much money as my actual coding job does, for as long as it takes me to
+make another one.
+
+
+![Meadow sprite magnet](images/meadow_sprite_magnet.png)

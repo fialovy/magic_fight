@@ -100,8 +100,8 @@ magic (dark, light, chaotic, ordered, hot, and cold) must be 10 (i.e., damage de
 must add up to 10, and damage taken must likewise add up to 10).
 
 
-For each magic type under `deals`, an array of strings of any size (the bigger the better, within
-reason) is used to generate spell choices on your character's turn. The phrasing
+For each magic type under `deals`, an array of any size (the bigger the better, within
+reason) of strings is used to generate spell choices on your character's turn. The phrasing
 should be a present-tense thing like "Shoot fireballs!" (a fair example for the `hot` list)
 or "Leach every particle of hope and joy from their mind" (probably `dark`). One spell
 from each type list will be randomly chosen and displayed as a choice upon your character's

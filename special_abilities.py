@@ -79,19 +79,17 @@ def _potion_life_effect() -> int:
     return sign * random.choice(range(1, 6))
 
 
+def _drunkify_string_list(strings: list[str]) -> list[str]:
+    if not NO_UPSIDEDOWN:
+        return list(map(upsidedown.transform, strings))
+    return list(map(lambda string: "".join(reversed(string)), strings))
+
+
 def _drunkify_spells(magic_info: CharacterMagicInfo) -> CharacterMagicInfo:
     """Flip the given spell descriptions upside down, because we are drunk."""
     drunken_magic = copy.deepcopy(magic_info)  # it's not THAT big
-
     for dimension_info in drunken_magic["deals"].values():
-        if not NO_UPSIDEDOWN:
-            drunkified_spells = map(upsidedown.transform, dimension_info["spells"])
-        else:
-            drunkified_spells = map(
-                lambda spell: "".join(reversed(spell)), dimension_info["spells"]
-            )
-        dimension_info["spells"] = list(drunkified_spells)
-
+        dimension_info["spells"] = _drunkify_string_list(dimension_info["spells"])
     return drunken_magic
 
 
@@ -119,6 +117,15 @@ def potionify(
     drunkard = Character(name=player.name)
     drunkard.life = player.life
     drunkard.magic_info = _drunkify_spells(drunkard.magic_info)
+
+    if drunkard.taunts is not None:
+        drunkard.taunts["taunts"] = _drunkify_string_list(drunkard.taunts["taunts"])
+
+    if drunkard.reactions is not None:
+        drunkard.reactions["reactions"] = _drunkify_string_list(
+            drunkard.reactions["reactions"]
+        )
+
     drunkard._set_special_abilities(
         special_path=f"{drunkard.namepath}/drunk_special.json"
     )

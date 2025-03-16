@@ -1,0 +1,12 @@
+[project]
+name = "magic-fight"
+version = "0.2.0"
+description = "Text loop game. Cast a spell! 🪄"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "black>=25.1.0",
+    "isort>=6.0.1",
+    "mypy>=1.15.0",
+    "upsidedown>=0.4",
+]

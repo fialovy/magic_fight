@@ -4,21 +4,13 @@
 
 Very simple text loop game. Cast a spell!
 
-For the love of gods, make sure it's Python 3+ (preferably 3.10+). Then:
+Make sure you have [uv](https://docs.astral.sh/uv/getting-started/installation/)
+available. Then:
 
-`pip install -r requirements.txt`
+`uv run magic_fight.py`
 
-`python magic_fight.py`
+For a 'no dependencies' version, try [magic_fight_lite](https://github.com/fialovy/magic_fight_lite).
 
-I originally wanted to make it jUsT wOrK with no dependencies whatsoever (and
-made a dumb workaround for the upsidedown library for that very reason), but the allure
-of mypy was far too strong.
-
-So, sorry. There's a requirements file of the perfectly primitive sort. 🤪
-
-### Recommendation
-
-`alias myblackisort='black .; isort .; mypy .;'`
 
 ![Character doodles](images/neat.png)
 

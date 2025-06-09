@@ -9,7 +9,7 @@ available. Then:
 
 `uv run magic_fight.py`
 
-For a 'no dependencies' version, try [magic_fight_lite](https://github.com/fialovy/magic_fight_lite).
+For a 'no dependencies' version (okay, fine - you need Python), try [magic_fight_lite](https://github.com/fialovy/magic_fight_lite).
 
 
 ![Character doodles](images/neat.png)
